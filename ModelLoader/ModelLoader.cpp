@@ -11,6 +11,11 @@ int main(int argc, char** argv) {
 
 	// read model file
 
+
 	// TODO: Check mesh is loaded correctly
-	glfw.createWindow(800, 600, "VERSION 2");
+	glfw.createWindow(600, 800, "VERSION 2");
+
+	while (!glfw.quit()) {
+		glfw.update();
+	}
 }

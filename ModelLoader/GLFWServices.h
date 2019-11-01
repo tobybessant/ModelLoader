@@ -6,6 +6,8 @@ class GLFWServices
 public:
 	GLFWServices();
 	void createWindow(unsigned int height, unsigned int width, const char* windowName);
+	void update();
+	bool quit();
 	void destroy();
 private:
 	GLFWwindow* window;
