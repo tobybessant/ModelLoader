@@ -5,11 +5,11 @@
 class ShaderProgram
 {
 public:
-	GLuint program;
 	ShaderProgram(const char* vertShader, const char* fragShader);
+	void use();
 	void update();
-	void setBackgroundColour(float colour[]);
 private:
+	GLuint program;
 	float *backgroundColour[4];
 };
 

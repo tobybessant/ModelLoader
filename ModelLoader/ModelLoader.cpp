@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
 
 	// create shader program
 	ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
+	program.use();
 
 	while (!glfw.quit()) {
 

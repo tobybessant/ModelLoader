@@ -22,4 +22,6 @@ void ShaderProgram::update()
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-
+void ShaderProgram::use() {
+	glUseProgram(program);
+}
