@@ -6,7 +6,7 @@
 #include "GLFWServices.h"
 #include "GLEWServices.h"
 #include "ShaderProgram.h"
-
+#include "Mesh.h"
 
 int main(int argc, char** argv) {
 	
@@ -25,13 +25,12 @@ int main(int argc, char** argv) {
 	ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
 	program.use();
 
+	Mesh awesomeface = Mesh();
+
 	while (!glfw.quit()) {
-
-		static const float purple[] = { 0.5f, 0.5f, 0.0f, 0.0f };
-		glClearBufferfv(GL_COLOR, 0, purple);
-		glClear(GL_COLOR_BUFFER_BIT);
-
+		awesomeface.render(program.id());
 		program.update();
 		glfw.update();
 	}
+	glfw.destroy();
 }

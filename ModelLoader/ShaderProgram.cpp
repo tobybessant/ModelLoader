@@ -5,8 +5,16 @@
 #include <GL\glew.h>
 #include <cstddef>
 
+enum VAO { ArrayBuffer = 1 };
+
+const GLint NumVAOs = ArrayBuffer;
+GLuint VAOs[NumVAOs];
+
 ShaderProgram::ShaderProgram(const char* vertShader, const char* fragShader)
 {
+	glGenVertexArrays(NumVAOs, VAOs);
+	glBindVertexArray(VAOs[0]);
+
 	ShaderInfo shaders[] = {
 		{ GL_VERTEX_SHADER, vertShader },
 		{ GL_FRAGMENT_SHADER, fragShader },
@@ -14,14 +22,19 @@ ShaderProgram::ShaderProgram(const char* vertShader, const char* fragShader)
 	};
 
 	program = LoadShaders(shaders);
-	glClearColor(0.5f, 0.7f, 0.1f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void ShaderProgram::update()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
+	glBindVertexArray(VAOs[0]);
 }
 
 void ShaderProgram::use() {
 	glUseProgram(program);
+}
+
+GLuint* ShaderProgram::id() {
+	return &program;
 }
