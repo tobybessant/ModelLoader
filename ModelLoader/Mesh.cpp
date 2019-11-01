@@ -42,19 +42,19 @@ void Mesh::initBuffers()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffers[Indices]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), &indicies[0], GL_STATIC_DRAW);
 
 	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(vPosition);
 
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Colours]);
-	glBufferStorage(GL_ARRAY_BUFFER, sizeof(colours), colours, 0);
+	glBufferStorage(GL_ARRAY_BUFFER, sizeof(colours), &colours[0], 0);
 
 	glVertexAttribPointer(cPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(cPosition);
 
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Texture]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(texture_coords), texture_coords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(texture_coords), &texture_coords[0], GL_STATIC_DRAW);
 
 	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(tPosition);
