@@ -2,6 +2,9 @@
 #include <vector>
 #include <GL\glew.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 class Mesh
 {
 public:
@@ -20,5 +23,6 @@ private:
 	std::vector<std::vector<GLfloat>> texture_coords;
 
 	void initBuffers();
+	void createTexture();
 };
 
