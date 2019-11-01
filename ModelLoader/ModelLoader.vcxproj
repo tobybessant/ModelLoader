@@ -123,16 +123,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GLEWServices.cpp" />
     <ClCompile Include="GLFWServices.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="ModelReader.cpp" />
+    <ClCompile Include="ShaderLoader.cpp" />
+    <ClCompile Include="ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="media\triangles.frag" />
+    <None Include="media\triangles.vert" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GLEWServices.h" />
     <ClInclude Include="GLFWServices.h" />
     <ClInclude Include="ModelReader.h" />
+    <ClInclude Include="ShaderLoader.h" />
+    <ClInclude Include="ShaderProgram.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="media\textures\awesomeface.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

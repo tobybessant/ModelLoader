@@ -2,6 +2,7 @@ using namespace std;
 
 #include "ModelReader.h"
 
+
 void ModelReader::parse(char* path)
 {
 	string line;
