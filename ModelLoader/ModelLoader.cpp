@@ -28,8 +28,8 @@ int main(int argc, char** argv) {
 	Mesh awesomeface = Mesh();
 
 	while (!glfw.quit()) {
-		awesomeface.render(program.id());
 		program.update();
+		awesomeface.render(program.id());
 		glfw.update();
 	}
 	glfw.destroy();
