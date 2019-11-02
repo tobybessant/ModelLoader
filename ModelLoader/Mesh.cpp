@@ -22,59 +22,13 @@ enum Attrib_IDs { vPosition, cPosition, tPosition };
 GLuint Buffers[BUFFER_COUNT];
 GLuint texture1;
 
-GLfloat _vertices[][3] = {
-	{0.5f,  0.5f, -0.5f},  //0 top right
-	{0.5f, -0.5f, -0.5f},  //1 bottom right
-	{-0.5f, -0.5f, -0.5f}, //2 bottom left
-	{-0.5f,  0.5f, -0.5f},  //3 top left
-
-	{0.5f,  0.5f, 0.5f},  //4 top right
-	{0.5f, -0.5f, 0.5f},  //5 bottom right
-	{-0.5f, -0.5f, 0.5f}, //6 bottom left
-	{-0.5f,  0.5f, 0.5f}  //7 top left 
-};
-
-
-GLuint _indices[][3] = {  // note that we start from 0!
-	{0, 3, 1},  // first Triangle front
-	{3, 2, 1},   // second Triangle
-
-	{4, 7, 0 },
-	{7, 3, 0 },
-
-	{1, 2, 5 },
-	{2, 6, 5 },
-
-	{5, 4, 0 },
-	{0, 1, 5 },
-
-	{2, 3, 7 },
-	{7, 6, 2 },
-
-	{4, 5, 7 },  // first Triangle back
-	{7, 5, 6 }   // second Triangle
-};
-
-GLfloat  _colours[][4] = {
-	{ 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f },
-	{ 1.0f, 1.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f },
-	{ 0.0f, 0.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 0.0f, 1.0f },
-};
-
-GLfloat  _texture_coords[] = {
-	 1.0f, 1.0f,
-	 1.0f, 0.0f,
-	 0.0f, 0.0f,
-	 0.0f, 1.0f,
-
-	 0.0f, 1.0f,
-	 0.0f, 0.0f,
-	 1.0f, 0.0f,
-	 1.0f, 1.0f,
-};
-
-Mesh::Mesh()
+Mesh::Mesh(std::vector<GLfloat> _vertices, std::vector<GLuint> _indices, std::vector<GLfloat> _colours, std::vector<GLfloat> _texture_coords)
 {
+	vertices = _vertices;
+	indices = _indices;
+	colours = _colours;
+	texture_coords = _texture_coords;
+
 	initBuffers();
 	createTexture();
 }
@@ -82,7 +36,8 @@ Mesh::Mesh()
 void Mesh::render(GLuint* _program)
 {
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	glDrawElements(GL_TRIANGLES, sizeof(_vertices), GL_UNSIGNED_INT, 0);
+	GLuint numVertices = indices.size();
+	glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
 
 	glUniform1i(glGetUniformLocation(*_program, "texture1"), 0);
 	
@@ -124,20 +79,20 @@ void Mesh::initBuffers()
 	glGenBuffers(BUFFER_COUNT, Buffers);
 
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Triangles]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(_vertices), _vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffers[Indices]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices), _indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(vPosition);
 
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Colours]);
-	glBufferStorage(GL_ARRAY_BUFFER, sizeof(_colours), _colours, 0);
+	glBufferStorage(GL_ARRAY_BUFFER, sizeof(colours[0]) * colours.size(), &colours[0], 0);
 	glVertexAttribPointer(cPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(cPosition);
 
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Texture]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(_texture_coords), _texture_coords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, texture_coords.size() * sizeof(GLfloat), &texture_coords[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(tPosition);
 }

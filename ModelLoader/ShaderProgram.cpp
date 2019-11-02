@@ -27,6 +27,7 @@ ShaderProgram::ShaderProgram(const char* vertShader, const char* fragShader)
 
 void ShaderProgram::update()
 {
+	glPointSize(3.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glBindVertexArray(VAOs[0]);
 }
