@@ -3,16 +3,17 @@ using namespace std;
 #include "ModelReader.h"
 
 
-void ModelReader::parse(char* path)
+void ModelReader::parse(const char* path)
 {
 	string line;
 	ifstream file(path);
 
 	if (file.is_open()) {
 
-		vector<vector<GLfloat>> vertices;
+		vector<GLfloat> vertices;
 		vector<GLfloat> texture_coordinates;
-		vector<vector<GLuint>> vertex_indices;
+		vector<GLfloat> texture_coordinates_mapped;
+		vector<GLuint> vertex_indices;
 		vector<GLfloat> vertex_normals;
 
 		while (getline(file, line)) {
@@ -20,13 +21,11 @@ void ModelReader::parse(char* path)
 			string type = result[0];
 
 			if (type == "v") {
-				vector<GLfloat> vertex;
 				for (unsigned int i = 1; i < result.size(); i = i + 1) {
 					std::string::size_type sz;
 					GLfloat vertex_float = stof(result[i], &sz);
-					vertex.push_back(vertex_float);
+					vertices.push_back(vertex_float);
 				}
-				vertices.push_back(vertex);
 			}
 			else if (type == "vt") {
 				for (unsigned int i = 1; i < result.size(); i = i + 1) {
@@ -46,15 +45,21 @@ void ModelReader::parse(char* path)
 			else if (type == "f") {
 				for (unsigned int i = 1; i < result.size(); i = i + 1) {
 					vector<string> indexes = split(result[i], '/');
-					vector<GLuint> index_set;
 					for (unsigned int j = 0; j < indexes.size(); j = j + 1) {
-						index_set.push_back(stoi(indexes[j]));
+						if (j == 0) {
+							vertex_indices.push_back(stoi(indexes[j]));
+							cout << indexes[j] << endl;
+						}
+						else if (j == 2) {
+							GLuint coordinate_index = stoi(indexes[j]);
+							texture_coordinates_mapped.push_back(texture_coordinates[coordinate_index]);
+							cout << indexes[j] << " (" << texture_coordinates[coordinate_index] << ") " <<endl;
+						}
 					}
-					vertex_indices.push_back(index_set);
 				}
 			}
 		}
-
+		cout << texture_coordinates.size();
 		file.close();
 	}
 }

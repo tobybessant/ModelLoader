@@ -22,7 +22,7 @@ enum Attrib_IDs { vPosition, cPosition, tPosition };
 GLuint Buffers[BUFFER_COUNT];
 GLuint texture1;
 
-Mesh::Mesh(std::vector<GLfloat> _vertices, std::vector<GLuint> _indices, std::vector<GLfloat> _colours, std::vector<GLfloat> _texture_coords)
+Mesh::Mesh(std::vector<GLfloat> _vertices, std::vector<GLuint> _indices, std::vector<GLfloat> _colours, std::vector<GLfloat> _texture_coords) 
 {
 	vertices = _vertices;
 	indices = _indices;
@@ -40,16 +40,16 @@ void Mesh::render(GLuint* _program)
 	glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
 
 	glUniform1i(glGetUniformLocation(*_program, "texture1"), 0);
-	
+
 	// creating the model matrix
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 	model = glm::rotate(model, glm::radians(-40.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 
 	// creating the view matrix
 	glm::mat4 view = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -2.0f));
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -8.0f));
 
 	// creating the projection matrix
 	glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3, 0.1f, 20.0f);
@@ -62,15 +62,15 @@ void Mesh::render(GLuint* _program)
 	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 }
 
-void Mesh::translate()
+void Mesh::translate(glm::vec3 translation)
 {
 }
 
-void Mesh::rotate()
+void Mesh::rotate(GLfloat amount, glm::vec3 axis)
 {
 }
 
-void Mesh::scale()
+void Mesh::scaleModel(glm::vec3 scale)
 {
 }
 

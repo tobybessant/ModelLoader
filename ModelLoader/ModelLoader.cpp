@@ -67,6 +67,7 @@ int main(int argc, char** argv) {
 	
 	// read model file
 	ModelReader reader = ModelReader();
+	reader.parse("./models/Creeper-obj/Creeper.obj");
 
 	// TODO: Check mesh is loaded correctly
 	

@@ -12,7 +12,7 @@
 class ModelReader
 {
 public:
-	void parse(char* path);
+	void parse(const char* path);
 	std::vector<std::string> split(const std::string& s, char delimiter);
 private:
 };
