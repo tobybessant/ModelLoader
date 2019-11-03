@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="GLEWServices.cpp" />
     <ClCompile Include="GLFWServices.cpp" />
+    <ClCompile Include="GLUTServices.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="ModelReader.cpp" />
@@ -139,6 +140,8 @@
   <ItemGroup>
     <ClInclude Include="GLEWServices.h" />
     <ClInclude Include="GLFWServices.h" />
+    <ClInclude Include="GLUTServices.h" />
+    <ClInclude Include="ICommand.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshConfig.h" />
     <ClInclude Include="ModelReader.h" />
