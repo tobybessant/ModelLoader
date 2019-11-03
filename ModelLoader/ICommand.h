@@ -17,5 +17,6 @@ public:
 };
 
 void QuitProgram::execute() {
-	ICommand::execute();  std::cout << "QUIT!";
+	ICommand::execute(); 
+	std::cout << "QUIT!";
 }
