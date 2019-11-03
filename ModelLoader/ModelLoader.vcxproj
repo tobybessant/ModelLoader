@@ -140,6 +140,7 @@
     <ClInclude Include="GLEWServices.h" />
     <ClInclude Include="GLFWServices.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshConfig.h" />
     <ClInclude Include="ModelReader.h" />
     <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="ShaderProgram.h" />

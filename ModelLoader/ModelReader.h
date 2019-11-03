@@ -1,4 +1,7 @@
 #pragma once
+
+#include "MeshConfig.h"
+
 #include <GL\glew.h>
 
 #include <stdio.h>
@@ -12,7 +15,7 @@
 class ModelReader
 {
 public:
-	void parse(const char* path);
+	MeshConfig parse(const char* path);
 	std::vector<std::string> split(const std::string& s, char delimiter);
 private:
 };

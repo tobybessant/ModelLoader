@@ -7,6 +7,7 @@
 #include "GLEWServices.h"
 #include "ShaderProgram.h"
 #include "Mesh.h"
+#include "MeshConfig.h"
 
 std::vector<GLfloat> vertices{
 	0.5f,  0.5f, -0.5f,  //0 top right
@@ -67,10 +68,10 @@ int main(int argc, char** argv) {
 	
 	// read model file
 	ModelReader reader = ModelReader();
-	reader.parse("./models/Creeper-obj/Creeper.obj");
+	MeshConfig config = reader.parse("./models/Creeper-obj/Creeper.obj");
 
 	// TODO: Check mesh is loaded correctly
-	
+
 	// init services
 	GLFWServices glfw = GLFWServices();
 	glfw.createWindow(600, 800, "VERSION 2");
@@ -81,7 +82,7 @@ int main(int argc, char** argv) {
 	ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
 	program.use();
 
-	Mesh awesomeface = Mesh(vertices, indices, colours, texture_coords);
+	Mesh awesomeface = Mesh(config);
 
 	while (!glfw.quit()) {
 		program.update();

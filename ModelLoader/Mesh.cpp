@@ -1,9 +1,10 @@
 #include "Mesh.h"
 
+#include "MeshConfig.h"
+
 #include "GL/glew.h"
 #include "GL/freeglut.h"
 #include "GLFW/glfw3.h"
-
 #include <glm/glm.hpp> //includes GLM
 #include <glm/ext/matrix_transform.hpp> // GLM: translate, rotate
 #include <glm/ext/matrix_clip_space.hpp> // GLM: perspective and ortho 
@@ -22,12 +23,12 @@ enum Attrib_IDs { vPosition, cPosition, tPosition };
 GLuint Buffers[BUFFER_COUNT];
 GLuint texture1;
 
-Mesh::Mesh(std::vector<GLfloat> _vertices, std::vector<GLuint> _indices, std::vector<GLfloat> _colours, std::vector<GLfloat> _texture_coords) 
+Mesh::Mesh(MeshConfig config) 
 {
-	vertices = _vertices;
-	indices = _indices;
-	colours = _colours;
-	texture_coords = _texture_coords;
+	vertices = config.vertices;
+	indices = config.indices;
+	colours = config.colours;
+	texture_coords = config.texture_coords;
 
 	initBuffers();
 	createTexture();
@@ -86,10 +87,12 @@ void Mesh::initBuffers()
 	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(vPosition);
 
-	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Colours]);
-	glBufferStorage(GL_ARRAY_BUFFER, sizeof(colours[0]) * colours.size(), &colours[0], 0);
-	glVertexAttribPointer(cPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(cPosition);
+	if (colours.size() > 0) {
+		glBindBuffer(GL_ARRAY_BUFFER, Buffers[Colours]);
+		glBufferStorage(GL_ARRAY_BUFFER, sizeof(colours[0]) * colours.size(), &colours[0], 0);
+		glVertexAttribPointer(cPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+		glEnableVertexAttribArray(cPosition);
+	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Texture]);
 	glBufferData(GL_ARRAY_BUFFER, texture_coords.size() * sizeof(GLfloat), &texture_coords[0], GL_STATIC_DRAW);
@@ -112,7 +115,7 @@ void Mesh::createTexture()
 	// load image, create texture and generate mipmaps
 	GLint width, height, nrChannels;
 	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-	unsigned char* data = stbi_load("media/textures/awesomeface.png", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load("models/Creeper-obj/Texture.png", &width, &height, &nrChannels, 0);
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);

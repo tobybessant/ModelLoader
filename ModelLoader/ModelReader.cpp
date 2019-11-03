@@ -1,20 +1,23 @@
 using namespace std;
 
 #include "ModelReader.h"
+#include "MeshConfig.h"
 
-
-void ModelReader::parse(const char* path)
+MeshConfig ModelReader::parse(const char* path)
 {
 	string line;
 	ifstream file(path);
 
 	if (file.is_open()) {
 
+		MeshConfig configuration;
+
 		vector<GLfloat> vertices;
 		vector<GLfloat> texture_coordinates;
 		vector<GLfloat> texture_coordinates_mapped;
 		vector<GLuint> vertex_indices;
 		vector<GLfloat> vertex_normals;
+		vector<string> materials;
 
 		while (getline(file, line)) {
 			vector<string> result = split(line, ' ');
@@ -43,24 +46,56 @@ void ModelReader::parse(const char* path)
 				}
 			}
 			else if (type == "f") {
+				vector<string> indexes = split(result[1], '/');
+				vertex_indices.push_back(stoi(indexes[0]));
+				
+				indexes = split(result[2], '/');
+				vertex_indices.push_back(stoi(indexes[0]));
+
+				indexes = split(result[3], '/');
+				vertex_indices.push_back(stoi(indexes[0]));
+
+				indexes = split(result[4], '/');
+				vertex_indices.push_back(stoi(indexes[0]));
+
+				indexes = split(result[3], '/');
+				vertex_indices.push_back(stoi(indexes[0]));
+
+				indexes = split(result[2], '/');
+				vertex_indices.push_back(stoi(indexes[0]));
+				/*
 				for (unsigned int i = 1; i < result.size(); i = i + 1) {
 					vector<string> indexes = split(result[i], '/');
-					for (unsigned int j = 0; j < indexes.size(); j = j + 1) {
+					vertex_indices.push_back(stoi(indexes[0]));
+					
+					for (unsigned int j = 0; j < 6; j = j + 1) {
 						if (j == 0) {
 							vertex_indices.push_back(stoi(indexes[j]));
 							cout << indexes[j] << endl;
-						}
+						} 
 						else if (j == 2) {
+							
 							GLuint coordinate_index = stoi(indexes[j]);
 							texture_coordinates_mapped.push_back(texture_coordinates[coordinate_index]);
 							cout << indexes[j] << " (" << texture_coordinates[coordinate_index] << ") " <<endl;
+							
 						}
 					}
+					
 				}
+				*/
 			}
+			else if (type == "mtllib") {
+				materials.push_back(result[1]);
+			}
+			// check data parsed correctly
+			configuration.vertices = vertices;
+			configuration.indices = vertex_indices;
+			configuration.texture_coords = texture_coordinates;
+			configuration.materials = materials;
 		}
-		cout << texture_coordinates.size();
 		file.close();
+		return configuration;
 	}
 }
 
