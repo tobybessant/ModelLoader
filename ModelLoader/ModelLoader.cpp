@@ -70,6 +70,12 @@ int main(int argc, char** argv) {
 	ModelReader reader = ModelReader();
 	MeshConfig config = reader.parse("./models/Creeper-obj/Creeper.obj");
 
+	/*MeshConfig config;
+	config.vertices = vertices;
+	config.indices = indices;
+	config.texture_coords = texture_coords;
+	config.colours = colours;*/
+
 	// TODO: Check mesh is loaded correctly
 
 	// init services

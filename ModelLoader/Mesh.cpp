@@ -2,6 +2,8 @@
 
 #include "MeshConfig.h"
 
+#include "Vertex.h"
+
 #include "GL/glew.h"
 #include "GL/freeglut.h"
 #include "GLFW/glfw3.h"
@@ -17,6 +19,11 @@
 
 #define BUFFER_OFFSET(a) ((void*)(a))
 
+enum VAO { ArrayBuffer = 1 };
+
+const GLint NumVAOs = ArrayBuffer;
+GLuint VAOs[NumVAOs];
+
 enum VBO { Triangles, Indices, Colours, Texture, BUFFER_COUNT };
 enum Attrib_IDs { vPosition, cPosition, tPosition };
 
@@ -27,8 +34,6 @@ Mesh::Mesh(MeshConfig config)
 {
 	vertices = config.vertices;
 	indices = config.indices;
-	colours = config.colours;
-	texture_coords = config.texture_coords;
 
 	initBuffers();
 	createTexture();
@@ -36,6 +41,8 @@ Mesh::Mesh(MeshConfig config)
 
 void Mesh::render(GLuint* _program)
 {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	glBindTexture(GL_TEXTURE_2D, texture1);
 	GLuint numVertices = indices.size();
 	glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
@@ -45,12 +52,12 @@ void Mesh::render(GLuint* _program)
 	// creating the model matrix
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
-	model = glm::rotate(model, glm::radians(-40.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+	model = glm::rotate(model, glm::radians((float) glfwGetTime() * 15), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
 
 	// creating the view matrix
 	glm::mat4 view = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -8.0f));
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f));
 
 	// creating the projection matrix
 	glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3, 0.1f, 20.0f);
@@ -61,6 +68,8 @@ void Mesh::render(GLuint* _program)
 	//adding the Uniform to the shader
 	int mvpLoc = glGetUniformLocation(*_program, "mvp");
 	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+
+	glBindVertexArray(VAOs[0]);
 }
 
 void Mesh::translate(glm::vec3 translation)
@@ -77,27 +86,37 @@ void Mesh::scaleModel(glm::vec3 scale)
 
 void Mesh::initBuffers()
 {
+	// create buffers
+	glGenVertexArrays(NumVAOs, VAOs);
 	glGenBuffers(BUFFER_COUNT, Buffers);
 
-	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Triangles]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+	// bind VAO
+	glBindVertexArray(VAOs[0]);
 
+	// load vertex data into buffers
+	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Triangles]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+
+	// bind and load EBO data
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffers[Indices]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(vPosition);
 
-	if (colours.size() > 0) {
+	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, texture_coordinates)));
+	glEnableVertexAttribArray(tPosition);
+
+	/*	if (colours.size() > 0) {
 		glBindBuffer(GL_ARRAY_BUFFER, Buffers[Colours]);
 		glBufferStorage(GL_ARRAY_BUFFER, sizeof(colours[0]) * colours.size(), &colours[0], 0);
 		glVertexAttribPointer(cPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 		glEnableVertexAttribArray(cPosition);
 	}
+	*/
 
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Texture]);
-	glBufferData(GL_ARRAY_BUFFER, texture_coords.size() * sizeof(GLfloat), &texture_coords[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(tPosition);
+
 }
 
 void Mesh::createTexture()
@@ -127,7 +146,7 @@ void Mesh::createTexture()
 	}
 	stbi_image_free(data);
 
-	glFrontFace(GL_CW);
-	glCullFace(GL_BACK);
-	glEnable(GL_CULL_FACE);
+	//glFrontFace(GL_CW);
+	//glCullFace(GL_BACK);
+	//glEnable(GL_CULL_FACE);
 }

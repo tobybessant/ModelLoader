@@ -1,13 +1,13 @@
 #pragma once
 
+#include "Vertex.h"
+
 #include <vector>
 #include <string>
 #include <GL\glew.h>
 
 struct MeshConfig {
-	std::vector<GLfloat> vertices;
+	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
-	std::vector<GLfloat> colours;
-	std::vector<GLfloat> texture_coords;
 	std::vector<std::string> materials;
 };

@@ -9,6 +9,7 @@ public:
 	void update();
 	bool quit();
 	void destroy();
+	void enableDebug();
 private:
 	GLFWwindow* window;
 };

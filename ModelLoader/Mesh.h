@@ -1,6 +1,8 @@
 #pragma once
 #include "MeshConfig.h"
 
+#include "Vertex.h"
+
 #include <vector>
 #include <GL\glew.h>
 #include <glm\ext\vector_float3.hpp>
@@ -15,10 +17,8 @@ public:
 	void rotate(GLfloat amount, glm::vec3 axis);
 	void scaleModel(glm::vec3 scale);
 private:
-	std::vector<GLfloat> vertices;
+	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
-	std::vector<GLfloat> colours;
-	std::vector<GLfloat> texture_coords;
 
 	void initBuffers();
 	void createTexture();
