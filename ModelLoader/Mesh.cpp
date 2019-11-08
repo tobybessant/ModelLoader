@@ -41,6 +41,7 @@ Mesh::Mesh(MeshConfig config)
 
 void Mesh::render(GLuint* _program)
 {
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBindTexture(GL_TEXTURE_2D, texture1);
 	GLuint numVertices = indices.size();
 	glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
@@ -62,7 +63,6 @@ void Mesh::render(GLuint* _program)
 
 	// Adding all matrices up to create combined matrix
 	glm::mat4 mvp = projection * view * model;
-
 	//adding the Uniform to the shader
 	int mvpLoc = glGetUniformLocation(*_program, "mvp");
 	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
@@ -84,6 +84,7 @@ void Mesh::scaleModel(glm::vec3 scale)
 
 void Mesh::initBuffers()
 {
+
 	// create buffers
 	glGenVertexArrays(NumVAOs, VAOs);
 	glGenBuffers(BUFFER_COUNT, Buffers);
@@ -105,16 +106,15 @@ void Mesh::initBuffers()
 	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, texture_coordinates)));
 	glEnableVertexAttribArray(tPosition);
 
-	/*	if (colours.size() > 0) {
+	/*if (colours.size() > 0) {
 		glBindBuffer(GL_ARRAY_BUFFER, Buffers[Colours]);
 		glBufferStorage(GL_ARRAY_BUFFER, sizeof(colours[0]) * colours.size(), &colours[0], 0);
 		glVertexAttribPointer(cPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 		glEnableVertexAttribArray(cPosition);
-	}
-	*/
+	}*/
+	
 
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Texture]);
-
 }
 
 void Mesh::createTexture()

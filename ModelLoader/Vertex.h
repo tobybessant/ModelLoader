@@ -9,7 +9,7 @@ struct Vertex {
 
 	Vertex(glm::vec3 _position, glm::vec3 _normal, glm::vec2 _tex) {
 		this->position = _position;
-		this->texture_coordinates = _tex;
 		this->normal = _normal;
+		this->texture_coordinates = _tex;
 	}
 };

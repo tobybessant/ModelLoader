@@ -9,6 +9,8 @@ MeshConfig ModelReader::parse(const char* path)
 	string line;
 	ifstream file(path);
 
+	GLint indexCount = 0;
+
 	if (file.is_open()) {
 
 		MeshConfig configuration;
@@ -41,8 +43,8 @@ MeshConfig ModelReader::parse(const char* path)
 				glm::vec2 tempTexture;
 				std::string::size_type sz;
 
-				tempTexture.s = stof(result[1], &sz);
-				tempTexture.t = stof(result[2], &sz);
+				tempTexture.x = stof(result[1], &sz);
+				tempTexture.y = stof(result[2], &sz);
 				
 				vertex_texture_coords.push_back(tempTexture);
 			}
@@ -57,17 +59,18 @@ MeshConfig ModelReader::parse(const char* path)
 				vertex_normals.push_back(tempNormal);
 			}
 			else if (type == "f") {
-				vector<int> triIndexes  = { 1, 2, 3, 4 };
+				vector<GLint> faceVertices  = { 1, 2, 3, 4 };
 
-				vector<string> face_indexes;
+				vector<string> indexValues;
 
-				for (unsigned int i = 0; i < triIndexes.size(); i = i + 1) {
-					int triVertex  = triIndexes[i];
-					vector<string> face_indexes = split(result[triVertex], '/');
+				for (unsigned int i = 0; i < faceVertices.size(); i = i + 1) {
+					GLint currentVertex  = faceVertices[i];
+
+					indexValues = split(result[currentVertex], '/');
 					
-					int vIndex = stoi(face_indexes[0]) - 1;
-					int vtIndex = stoi(face_indexes[1]) - 1;
-					int vnIndex = stoi(face_indexes[2]) - 1;
+					GLint vIndex = stoi(indexValues[0]) - 1;
+					GLint vtIndex = stoi(indexValues[1]) - 1;
+					GLint vnIndex = stoi(indexValues[2]) - 1;
 
 					glm::vec3 vPos = vertex_positions[vIndex];
 					glm::vec2 vtPos = vertex_texture_coords[vtIndex];
@@ -76,12 +79,54 @@ MeshConfig ModelReader::parse(const char* path)
 					Vertex v(vPos, vnPos, vtPos);
 
 					vertices.push_back(v);
-					vertex_indices.push_back(vIndex);
-					vertex_indices.push_back(vtIndex);
-					vertex_indices.push_back(vnIndex);
+					/*
+					vertex_indices.push_back(indexCount);
+					indexCount = (indexCount + 1) % vertex_positions.size();
+					*/
 				}
-
 			}
+
+			vertex_indices.push_back(0);
+			vertex_indices.push_back(1);
+			vertex_indices.push_back(2);
+			vertex_indices.push_back(3);
+			vertex_indices.push_back(2);
+			vertex_indices.push_back(0);
+
+			vertex_indices.push_back(0 + 4);
+			vertex_indices.push_back(1 + 4);
+			vertex_indices.push_back(2 + 4);
+			vertex_indices.push_back(3 + 4);
+			vertex_indices.push_back(2 + 4);
+			vertex_indices.push_back(0 + 4);
+
+			vertex_indices.push_back(0 + 8);
+			vertex_indices.push_back(1 + 8);
+			vertex_indices.push_back(2 + 8);
+			vertex_indices.push_back(3 + 8);
+			vertex_indices.push_back(2 + 8);
+			vertex_indices.push_back(0 + 8);
+
+			vertex_indices.push_back(0 + 12);
+			vertex_indices.push_back(1 + 12);
+			vertex_indices.push_back(2 + 12);
+			vertex_indices.push_back(3 + 12);
+			vertex_indices.push_back(2 + 12);
+			vertex_indices.push_back(0 + 12);
+
+			vertex_indices.push_back(0 + 16);
+			vertex_indices.push_back(1 + 16);
+			vertex_indices.push_back(2 + 16);
+			vertex_indices.push_back(3 + 16);
+			vertex_indices.push_back(2 + 16);
+			vertex_indices.push_back(0 + 16);
+
+			vertex_indices.push_back(0 + 20);
+			vertex_indices.push_back(1 + 20);
+			vertex_indices.push_back(2 + 20);
+			vertex_indices.push_back(3 + 20);
+			vertex_indices.push_back(2 + 20);
+			vertex_indices.push_back(0 + 20);
 		}
 		configuration.indices = vertex_indices;
 		configuration.vertices = vertices;
