@@ -106,6 +106,9 @@ void Mesh::initBuffers()
 	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, texture_coordinates)));
 	glEnableVertexAttribArray(tPosition);
 
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, normal)));
+	glEnableVertexAttribArray(3);
+
 	/*if (colours.size() > 0) {
 		glBindBuffer(GL_ARRAY_BUFFER, Buffers[Colours]);
 		glBufferStorage(GL_ARRAY_BUFFER, sizeof(colours[0]) * colours.size(), &colours[0], 0);
@@ -144,7 +147,9 @@ void Mesh::createTexture()
 	}
 	stbi_image_free(data);
 
+	
 	//glFrontFace(GL_CW);
 	//glCullFace(GL_BACK);
 	//glEnable(GL_CULL_FACE);
+	
 }

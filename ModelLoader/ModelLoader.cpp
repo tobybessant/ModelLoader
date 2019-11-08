@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 
 	// init services
 	GLFWServices glfw = GLFWServices();
-	glfw.createWindow(600, 800, "VERSION 2");
+	glfw.createWindow(600, 800, "Model Loader");
 
 	GLEWServices glew = GLEWServices();
 
