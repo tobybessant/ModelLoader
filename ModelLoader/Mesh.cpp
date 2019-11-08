@@ -41,8 +41,6 @@ Mesh::Mesh(MeshConfig config)
 
 void Mesh::render(GLuint* _program)
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 	glBindTexture(GL_TEXTURE_2D, texture1);
 	GLuint numVertices = indices.size();
 	glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);

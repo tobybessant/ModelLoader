@@ -42,7 +42,10 @@ void keypress(GLFWwindow* window, int key, int scancode, int action, int mods)
 	std::map<int, ICommand*> keyHandlers;
 
 	QuitProgram quit = QuitProgram();
+	ToggleWireframe wireframe = ToggleWireframe();
+
 	keyHandlers[GLFW_KEY_Q] = &quit;
+	keyHandlers[GLFW_KEY_W] = &wireframe;
 
 	keyHandlers[key]->execute();
 }

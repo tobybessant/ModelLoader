@@ -57,7 +57,7 @@ MeshConfig ModelReader::parse(const char* path)
 				vertex_normals.push_back(tempNormal);
 			}
 			else if (type == "f") {
-				vector<int> triIndexes  = { 1, 2, 3 };
+				vector<int> triIndexes  = { 1, 2, 3, 4 };
 
 				vector<string> face_indexes;
 
