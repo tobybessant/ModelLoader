@@ -17,7 +17,8 @@ MeshConfig ModelReader::parse(const char* path)
 		vector<Vertex> vertices;
 
 		vector<GLuint> vertexIndices;
-		int vertex_index = 0;
+		int indiceTracker = 0;
+		int currentVertexCount = 0;
 
 		vector<glm::vec3> vertex_positions;
 		vector<glm::vec3> vertex_normals;
@@ -79,50 +80,26 @@ MeshConfig ModelReader::parse(const char* path)
 					Vertex v(vPos, vnPos, vtPos);
 
 					vertices.push_back(v);
+					indiceTracker++;
+
 				}
+				// if quad, add indices respective of 2 triangles
+				if (result.size() > 4) {
+					vertexIndices.push_back(2 + currentVertexCount);
+					vertexIndices.push_back(1 + currentVertexCount);
+					vertexIndices.push_back(0 + currentVertexCount);
+					vertexIndices.push_back(3 + currentVertexCount);
+					vertexIndices.push_back(2 + currentVertexCount);
+					vertexIndices.push_back(0 + currentVertexCount);
+				}
+				else {
+					vertexIndices.push_back(2 + currentVertexCount);
+					vertexIndices.push_back(1 + currentVertexCount);
+					vertexIndices.push_back(0 + currentVertexCount);
+				}
+				currentVertexCount += indiceTracker;
+				indiceTracker = 0;
 			}
-
-			vertexIndices.push_back(2);
-			vertexIndices.push_back(1);
-			vertexIndices.push_back(0);
-			vertexIndices.push_back(3);
-			vertexIndices.push_back(2);
-			vertexIndices.push_back(0);
-
-			vertexIndices.push_back(2 + 4);
-			vertexIndices.push_back(1 + 4);
-			vertexIndices.push_back(0 + 4);
-			vertexIndices.push_back(3 + 4);
-			vertexIndices.push_back(2 + 4);
-			vertexIndices.push_back(0 + 4);
-
-			vertexIndices.push_back(2 + 8);
-			vertexIndices.push_back(1 + 8);
-			vertexIndices.push_back(0 + 8);
-			vertexIndices.push_back(3 + 8);
-			vertexIndices.push_back(2 + 8);
-			vertexIndices.push_back(0 + 8);
-
-			vertexIndices.push_back(2 + 12);
-			vertexIndices.push_back(1 + 12);
-			vertexIndices.push_back(0 + 12);
-			vertexIndices.push_back(3 + 12);
-			vertexIndices.push_back(2 + 12);
-			vertexIndices.push_back(0 + 12);
-
-			vertexIndices.push_back(2 + 16);
-			vertexIndices.push_back(1 + 16);
-			vertexIndices.push_back(0 + 16);
-			vertexIndices.push_back(3 + 16);
-			vertexIndices.push_back(2 + 16);
-			vertexIndices.push_back(0 + 16);
-
-			vertexIndices.push_back(2 + 20);
-			vertexIndices.push_back(1 + 20);
-			vertexIndices.push_back(0 + 20);
-			vertexIndices.push_back(3 + 20);
-			vertexIndices.push_back(2 + 20);
-			vertexIndices.push_back(0 + 20);
 		}
 		configuration.indices = vertexIndices;
 		configuration.vertices = vertices;
