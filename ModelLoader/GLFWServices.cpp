@@ -11,9 +11,7 @@ GLFWServices::GLFWServices()
 void GLFWServices::createWindow(unsigned int height, unsigned int width, const char* windowName) {
 	window = glfwCreateWindow(width, height, windowName, NULL, NULL);
 
-	inputEvents = InputManager();
-
-	glfwSetKeyCallback(window, inputEvents.callback);
+	glfwSetKeyCallback(window, keypress);
 	glfwMakeContextCurrent(window);
 }
 
@@ -36,5 +34,7 @@ void GLFWServices::destroy()
 
 void keypress(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	
+	if (key == GLFW_KEY_W) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
 }

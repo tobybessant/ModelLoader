@@ -1,7 +1,8 @@
 #pragma once
 
 #include "GLFW/glfw3.h"
-#include "InputManager.h"
+#include <map>
+#include <string>
 
 class GLFWServices
 {
@@ -13,6 +14,5 @@ public:
 	void destroy();
 private:
 	GLFWwindow* window;
-	InputManager inputEvents;
 };
 

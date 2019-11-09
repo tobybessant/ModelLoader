@@ -1,4 +1,5 @@
 using namespace std;
+
 #include <glm/glm.hpp> //includes GLM
 #include "ModelReader.h"
 #include "MeshConfig.h"
@@ -12,6 +13,10 @@ bool ModelReader::verifyFile(std::string& path)
 
 MeshConfig ModelReader::parse(string& path)
 {
+	vector<string> pathComponents = split(path, '/');
+	string fileName = pathComponents[pathComponents.size() - 1];
+	pathComponents.pop_back();
+
 	string line;
 	ifstream file(path);
 
@@ -35,8 +40,11 @@ MeshConfig ModelReader::parse(string& path)
 		while (getline(file, line)) {
 			vector<string> result = split(line, ' ');
 			string type = result[0];
-
-			if (type == "v") {
+			if (type == "mtllib") {
+				string mtlLib = result[1];
+				
+			}
+			else if (type == "v") {
 				glm::vec3 tempVector;
 				std::string::size_type sz;
 
@@ -124,3 +132,4 @@ vector<string> ModelReader::split(const string& s, char delimiter)
 	}
 	return tokens;
 }
+
