@@ -60,14 +60,12 @@ MeshConfig ModelReader::parse(const char* path)
 				vertex_normals.push_back(tempNormal);
 			}
 			else if (type == "f") {
-				vector<GLint> faceVertices  = { 1, 2, 3, 4 };
 
 				vector<string> indexValues;
 
-				for (unsigned int i = 0; i < faceVertices.size(); i = i + 1) {
-					GLint currentVertex  = faceVertices[i];
+				for (unsigned int i = 1; i < result.size(); i = i + 1) {
 
-					indexValues = split(result[currentVertex], '/');
+					indexValues = split(result[i], '/');
 					
 					GLint vIndex = stoi(indexValues[0]) - 1;
 					GLint vtIndex = stoi(indexValues[1]) - 1;

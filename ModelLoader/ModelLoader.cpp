@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
 	
 	// read model file
 	ModelReader reader = ModelReader();
-	MeshConfig config = reader.parse("./models/Creeper-obj/Creeper.obj");
+	MeshConfig config = reader.parse("./models/Pouf-obj/pouf.obj");
 
 	/*MeshConfig config;
 	config.vertices = vertices;
