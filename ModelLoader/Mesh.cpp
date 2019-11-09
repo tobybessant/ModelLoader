@@ -24,8 +24,8 @@ enum VAO { ArrayBuffer = 1 };
 const GLint NumVAOs = ArrayBuffer;
 GLuint VAOs[NumVAOs];
 
-enum VBO { Triangles, Indices, Colours, Texture, BUFFER_COUNT };
-enum Attrib_IDs { vPosition, cPosition, tPosition };
+enum VBO { Vertices, Indices, Colours, Texture, BUFFER_COUNT };
+enum Attrib_IDs { vPosition, nPosition, tPosition };
 
 GLuint Buffers[BUFFER_COUNT];
 GLuint texture1;
@@ -50,9 +50,9 @@ void Mesh::render(GLuint* _program)
 
 	// creating the model matrix
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
-	model = glm::rotate(model, glm::radians((float) glfwGetTime() * 15), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
+	model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
+	model = glm::rotate(model, glm::radians((float) glfwGetTime() * 25), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
 
 	// creating the view matrix
 	glm::mat4 view = glm::mat4(1.0f);
@@ -93,7 +93,7 @@ void Mesh::initBuffers()
 	glBindVertexArray(VAOs[0]);
 
 	// load vertex data into buffers
-	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Triangles]);
+	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Vertices]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
 	// bind and load EBO data
@@ -102,22 +102,23 @@ void Mesh::initBuffers()
 
 	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(vPosition);
+	
+	glVertexAttribPointer(nPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, normal)));
+	glEnableVertexAttribArray(nPosition);
 
-	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, texture_coordinates)));
+	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, texture)));
 	glEnableVertexAttribArray(tPosition);
 
-	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, normal)));
-	glEnableVertexAttribArray(3);
-
-	/*if (colours.size() > 0) {
+	/*
+	if (colours.size() > 0) {
 		glBindBuffer(GL_ARRAY_BUFFER, Buffers[Colours]);
 		glBufferStorage(GL_ARRAY_BUFFER, sizeof(colours[0]) * colours.size(), &colours[0], 0);
 		glVertexAttribPointer(cPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 		glEnableVertexAttribArray(cPosition);
-	}*/
-	
+	}
+	*/
 
-	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Texture]);
+	//glBindBuffer(GL_ARRAY_BUFFER, Buffers[Texture]);
 }
 
 void Mesh::createTexture()
@@ -147,9 +148,7 @@ void Mesh::createTexture()
 	}
 	stbi_image_free(data);
 
-	
-	//glFrontFace(GL_CW);
-	//glCullFace(GL_BACK);
-	//glEnable(GL_CULL_FACE);
-	
+	glFrontFace(GL_CW);
+	glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
 }

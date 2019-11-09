@@ -1,11 +1,22 @@
 using namespace std;
+
 #include <glm/glm.hpp> //includes GLM
 #include "ModelReader.h"
 #include "MeshConfig.h"
 #include "Vertex.h"
 
-MeshConfig ModelReader::parse(const char* path)
+bool ModelReader::verifyFile(std::string& path)
 {
+	ifstream f(path.c_str());
+	return f.good();
+}
+
+MeshConfig ModelReader::parse(string& path)
+{
+	vector<string> pathComponents = split(path, '/');
+	string fileName = pathComponents[pathComponents.size() - 1];
+	pathComponents.pop_back();
+
 	string line;
 	ifstream file(path);
 
@@ -16,8 +27,9 @@ MeshConfig ModelReader::parse(const char* path)
 		MeshConfig configuration;
 		vector<Vertex> vertices;
 
-		vector<GLuint> vertex_indices;
-		int vertex_index = 0;
+		vector<GLuint> vertexIndices;
+		int indiceTracker = 0;
+		int currentVertexCount = 0;
 
 		vector<glm::vec3> vertex_positions;
 		vector<glm::vec3> vertex_normals;
@@ -28,8 +40,11 @@ MeshConfig ModelReader::parse(const char* path)
 		while (getline(file, line)) {
 			vector<string> result = split(line, ' ');
 			string type = result[0];
-
-			if (type == "v") {
+			if (type == "mtllib") {
+				string mtlLib = result[1];
+				
+			}
+			else if (type == "v") {
 				glm::vec3 tempVector;
 				std::string::size_type sz;
 
@@ -59,14 +74,12 @@ MeshConfig ModelReader::parse(const char* path)
 				vertex_normals.push_back(tempNormal);
 			}
 			else if (type == "f") {
-				vector<GLint> faceVertices  = { 1, 2, 3, 4 };
 
 				vector<string> indexValues;
 
-				for (unsigned int i = 0; i < faceVertices.size(); i = i + 1) {
-					GLint currentVertex  = faceVertices[i];
+				for (unsigned int i = 1; i < result.size(); i = i + 1) {
 
-					indexValues = split(result[currentVertex], '/');
+					indexValues = split(result[i], '/');
 					
 					GLint vIndex = stoi(indexValues[0]) - 1;
 					GLint vtIndex = stoi(indexValues[1]) - 1;
@@ -79,56 +92,28 @@ MeshConfig ModelReader::parse(const char* path)
 					Vertex v(vPos, vnPos, vtPos);
 
 					vertices.push_back(v);
-					/*
-					vertex_indices.push_back(indexCount);
-					indexCount = (indexCount + 1) % vertex_positions.size();
-					*/
+					indiceTracker++;
+
 				}
+				// if quad, add indices respective of 2 triangles
+				if (result.size() > 4) {
+					vertexIndices.push_back(2 + currentVertexCount);
+					vertexIndices.push_back(1 + currentVertexCount);
+					vertexIndices.push_back(0 + currentVertexCount);
+					vertexIndices.push_back(3 + currentVertexCount);
+					vertexIndices.push_back(2 + currentVertexCount);
+					vertexIndices.push_back(0 + currentVertexCount);
+				}
+				else {
+					vertexIndices.push_back(2 + currentVertexCount);
+					vertexIndices.push_back(1 + currentVertexCount);
+					vertexIndices.push_back(0 + currentVertexCount);
+				}
+				currentVertexCount += indiceTracker;
+				indiceTracker = 0;
 			}
-
-			vertex_indices.push_back(0);
-			vertex_indices.push_back(1);
-			vertex_indices.push_back(2);
-			vertex_indices.push_back(3);
-			vertex_indices.push_back(2);
-			vertex_indices.push_back(0);
-
-			vertex_indices.push_back(0 + 4);
-			vertex_indices.push_back(1 + 4);
-			vertex_indices.push_back(2 + 4);
-			vertex_indices.push_back(3 + 4);
-			vertex_indices.push_back(2 + 4);
-			vertex_indices.push_back(0 + 4);
-
-			vertex_indices.push_back(0 + 8);
-			vertex_indices.push_back(1 + 8);
-			vertex_indices.push_back(2 + 8);
-			vertex_indices.push_back(3 + 8);
-			vertex_indices.push_back(2 + 8);
-			vertex_indices.push_back(0 + 8);
-
-			vertex_indices.push_back(0 + 12);
-			vertex_indices.push_back(1 + 12);
-			vertex_indices.push_back(2 + 12);
-			vertex_indices.push_back(3 + 12);
-			vertex_indices.push_back(2 + 12);
-			vertex_indices.push_back(0 + 12);
-
-			vertex_indices.push_back(0 + 16);
-			vertex_indices.push_back(1 + 16);
-			vertex_indices.push_back(2 + 16);
-			vertex_indices.push_back(3 + 16);
-			vertex_indices.push_back(2 + 16);
-			vertex_indices.push_back(0 + 16);
-
-			vertex_indices.push_back(0 + 20);
-			vertex_indices.push_back(1 + 20);
-			vertex_indices.push_back(2 + 20);
-			vertex_indices.push_back(3 + 20);
-			vertex_indices.push_back(2 + 20);
-			vertex_indices.push_back(0 + 20);
 		}
-		configuration.indices = vertex_indices;
+		configuration.indices = vertexIndices;
 		configuration.vertices = vertices;
 
 		file.close();
@@ -147,3 +132,4 @@ vector<string> ModelReader::split(const string& s, char delimiter)
 	}
 	return tokens;
 }
+

@@ -15,7 +15,8 @@
 class ModelReader
 {
 public:
-	MeshConfig parse(const char* path);
+	bool verifyFile(std::string& path);
+	MeshConfig parse(std::string& path);
 	std::vector<std::string> split(const std::string& s, char delimiter);
 private:
 };

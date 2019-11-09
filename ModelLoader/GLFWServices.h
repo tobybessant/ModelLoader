@@ -1,5 +1,8 @@
 #pragma once
+
 #include "GLFW/glfw3.h"
+#include <map>
+#include <string>
 
 class GLFWServices
 {
@@ -9,7 +12,6 @@ public:
 	void update();
 	bool quit();
 	void destroy();
-	void enableDebug();
 private:
 	GLFWwindow* window;
 };
