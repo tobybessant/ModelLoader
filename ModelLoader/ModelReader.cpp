@@ -4,7 +4,13 @@ using namespace std;
 #include "MeshConfig.h"
 #include "Vertex.h"
 
-MeshConfig ModelReader::parse(const char* path)
+bool ModelReader::verifyFile(std::string& path)
+{
+	ifstream f(path.c_str());
+	return f.good();
+}
+
+MeshConfig ModelReader::parse(string& path)
 {
 	string line;
 	ifstream file(path);

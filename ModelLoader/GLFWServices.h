@@ -1,5 +1,7 @@
 #pragma once
+
 #include "GLFW/glfw3.h"
+#include "InputManager.h"
 
 class GLFWServices
 {
@@ -9,8 +11,8 @@ public:
 	void update();
 	bool quit();
 	void destroy();
-	void enableDebug();
 private:
 	GLFWwindow* window;
+	InputManager inputEvents;
 };
 
