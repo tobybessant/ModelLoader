@@ -16,7 +16,7 @@ MeshConfig ModelReader::parse(const char* path)
 		MeshConfig configuration;
 		vector<Vertex> vertices;
 
-		vector<GLuint> vertex_indices;
+		vector<GLuint> vertexIndices;
 		int vertex_index = 0;
 
 		vector<glm::vec3> vertex_positions;
@@ -79,56 +79,52 @@ MeshConfig ModelReader::parse(const char* path)
 					Vertex v(vPos, vnPos, vtPos);
 
 					vertices.push_back(v);
-					/*
-					vertex_indices.push_back(indexCount);
-					indexCount = (indexCount + 1) % vertex_positions.size();
-					*/
 				}
 			}
 
-			vertex_indices.push_back(0);
-			vertex_indices.push_back(1);
-			vertex_indices.push_back(2);
-			vertex_indices.push_back(3);
-			vertex_indices.push_back(2);
-			vertex_indices.push_back(0);
+			vertexIndices.push_back(2);
+			vertexIndices.push_back(1);
+			vertexIndices.push_back(0);
+			vertexIndices.push_back(3);
+			vertexIndices.push_back(2);
+			vertexIndices.push_back(0);
 
-			vertex_indices.push_back(4);
-			vertex_indices.push_back(5);
-			vertex_indices.push_back(6);
-			vertex_indices.push_back(7);
-			vertex_indices.push_back(6);
-			vertex_indices.push_back(4);
+			vertexIndices.push_back(2 + 4);
+			vertexIndices.push_back(1 + 4);
+			vertexIndices.push_back(0 + 4);
+			vertexIndices.push_back(3 + 4);
+			vertexIndices.push_back(2 + 4);
+			vertexIndices.push_back(0 + 4);
 
-			vertex_indices.push_back(0 + 8);
-			vertex_indices.push_back(1 + 8);
-			vertex_indices.push_back(2 + 8);
-			vertex_indices.push_back(3 + 8);
-			vertex_indices.push_back(2 + 8);
-			vertex_indices.push_back(0 + 8);
+			vertexIndices.push_back(2 + 8);
+			vertexIndices.push_back(1 + 8);
+			vertexIndices.push_back(0 + 8);
+			vertexIndices.push_back(3 + 8);
+			vertexIndices.push_back(2 + 8);
+			vertexIndices.push_back(0 + 8);
 
-			vertex_indices.push_back(0 + 12);
-			vertex_indices.push_back(1 + 12);
-			vertex_indices.push_back(2 + 12);
-			vertex_indices.push_back(3 + 12);
-			vertex_indices.push_back(2 + 12);
-			vertex_indices.push_back(0 + 12);
+			vertexIndices.push_back(2 + 12);
+			vertexIndices.push_back(1 + 12);
+			vertexIndices.push_back(0 + 12);
+			vertexIndices.push_back(3 + 12);
+			vertexIndices.push_back(2 + 12);
+			vertexIndices.push_back(0 + 12);
 
-			vertex_indices.push_back(0 + 16);
-			vertex_indices.push_back(1 + 16);
-			vertex_indices.push_back(2 + 16);
-			vertex_indices.push_back(3 + 16);
-			vertex_indices.push_back(2 + 16);
-			vertex_indices.push_back(0 + 16);
+			vertexIndices.push_back(2 + 16);
+			vertexIndices.push_back(1 + 16);
+			vertexIndices.push_back(0 + 16);
+			vertexIndices.push_back(3 + 16);
+			vertexIndices.push_back(2 + 16);
+			vertexIndices.push_back(0 + 16);
 
-			vertex_indices.push_back(0 + 20);
-			vertex_indices.push_back(1 + 20);
-			vertex_indices.push_back(2 + 20);
-			vertex_indices.push_back(3 + 20);
-			vertex_indices.push_back(2 + 20);
-			vertex_indices.push_back(0 + 20);
+			vertexIndices.push_back(2 + 20);
+			vertexIndices.push_back(1 + 20);
+			vertexIndices.push_back(0 + 20);
+			vertexIndices.push_back(3 + 20);
+			vertexIndices.push_back(2 + 20);
+			vertexIndices.push_back(0 + 20);
 		}
-		configuration.indices = vertex_indices;
+		configuration.indices = vertexIndices;
 		configuration.vertices = vertices;
 
 		file.close();
