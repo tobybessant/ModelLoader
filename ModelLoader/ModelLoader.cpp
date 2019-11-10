@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
 
 			while (!glfw.quit()) {
 				program.update();
-				//model.render(program.id());
+				model.render(program.id());
 				glfw.update();
 			}
 			glfw.destroy();

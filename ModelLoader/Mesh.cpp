@@ -19,35 +19,33 @@
 
 #define BUFFER_OFFSET(a) ((void*)(a))
 
-enum VAO { ArrayBuffer = 1 };
-
-const GLint NumVAOs = ArrayBuffer;
-GLuint VAOs[NumVAOs];
-
-enum VBO { Vertices, Indices, Colours, Texture, BUFFER_COUNT };
-enum Attrib_IDs { vPosition, nPosition, tPosition };
-
-GLuint Buffers[BUFFER_COUNT];
-GLuint texture1;
-
 Mesh::Mesh() 
 {
 }
 
-void Mesh::init(MeshConfig& _config)
+void Mesh::setup(MeshConfig& _config)
 {
 	vertices = _config.vertices;
 	indices = _config.indices;
 	material = _config.material;
 
-	//initBuffers();
-	//createTexture();
+	initBuffers();
+	createTexture();
+}
+
+void Mesh::init()
+{
+	// TODO: Need to make 'recursive' init function on model that calls it for objects -> meshes
+	initBuffers();
+	createTexture();
 }
 
 void Mesh::render(GLuint* _program)
 {
+	glBindVertexArray(VAO);
+
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glBindTexture(GL_TEXTURE_2D, texture1);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	GLuint numVertices = indices.size();
 	glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
 
@@ -72,7 +70,6 @@ void Mesh::render(GLuint* _program)
 	int mvpLoc = glGetUniformLocation(*_program, "mvp");
 	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
-	glBindVertexArray(VAOs[0]);
 }
 
 void Mesh::translate(glm::vec3 translation)
@@ -89,13 +86,9 @@ void Mesh::scaleModel(glm::vec3 scale)
 
 void Mesh::initBuffers()
 {
-
 	// create buffers
-	glGenVertexArrays(NumVAOs, VAOs);
+	glGenVertexArrays(1, &VAO);
 	glGenBuffers(BUFFER_COUNT, Buffers);
-
-	// bind VAO
-	glBindVertexArray(VAOs[0]);
 
 	// load vertex data into buffers
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Vertices]);
@@ -105,6 +98,7 @@ void Mesh::initBuffers()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffers[Indices]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 
+	// tell opengl how to parse vertex data
 	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(vPosition);
 	
@@ -114,24 +108,17 @@ void Mesh::initBuffers()
 	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, texture)));
 	glEnableVertexAttribArray(tPosition);
 
-	/*
-	if (colours.size() > 0) {
-		glBindBuffer(GL_ARRAY_BUFFER, Buffers[Colours]);
-		glBufferStorage(GL_ARRAY_BUFFER, sizeof(colours[0]) * colours.size(), &colours[0], 0);
-		glVertexAttribPointer(cPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-		glEnableVertexAttribArray(cPosition);
-	}
-	*/
-
-	//glBindBuffer(GL_ARRAY_BUFFER, Buffers[Texture]);
+	// bind VAO
+	glBindVertexArray(VAO);
+	
 }
 
 void Mesh::createTexture()
 {
 	// texture 1
 	// ---------
-	glGenTextures(1, &texture1);
-	glBindTexture(GL_TEXTURE_2D, texture1);
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	// set the texture wrapping parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
