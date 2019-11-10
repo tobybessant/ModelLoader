@@ -1,11 +1,12 @@
 using namespace std;
 
 #include <glm/glm.hpp> //includes GLM
+#include <map>
 #include "ModelReader.h"
 #include "MeshConfig.h"
 #include "Vertex.h"
-#include <map>
 #include "Material.h"
+#include "Object.h"
 
 bool ModelReader::verifyFile(std::string& path)
 {
@@ -13,7 +14,7 @@ bool ModelReader::verifyFile(std::string& path)
 	return f.good();
 }
 
-MeshConfig ModelReader::parse(string& path)
+Model ModelReader::parse(string& path)
 {
 	vector<string> pathComponents = split(path, '/');
 	string fileName = pathComponents[pathComponents.size() - 1];
@@ -25,6 +26,8 @@ MeshConfig ModelReader::parse(string& path)
 	GLint indexCount = 0;
 
 	if (file.is_open()) {
+
+		Model loadedModel = Model();
 
 		MeshConfig configuration;
 		vector<Vertex> vertices;
@@ -38,6 +41,9 @@ MeshConfig ModelReader::parse(string& path)
 		vector<glm::vec2> vertex_texture_coords;
 
 		map<string, Material>materials;
+
+		Object* tempObject = nullptr;
+		Mesh* tempMesh = nullptr;
 
 		while (getline(file, line)) {
 			vector<string> result = split(line, ' ');
@@ -97,6 +103,14 @@ MeshConfig ModelReader::parse(string& path)
 					}
 				}
 			}
+			else if (type == "o") {
+				if (tempObject != nullptr) {
+					loadedModel.addObject(*tempObject);
+				}
+
+				tempObject = &Object();
+				tempObject->setName(result[1]);
+			}
 			else if (type == "v") {
 				glm::vec3 tempVector;
 				std::string::size_type sz;
@@ -126,6 +140,17 @@ MeshConfig ModelReader::parse(string& path)
 
 				vertex_normals.push_back(tempNormal);
 			}
+			else if (type == "usemtl") {
+				if (tempMesh != nullptr) {
+					tempMesh->init(configuration);
+					tempObject->addMesh(*tempMesh);
+				}
+
+				tempMesh = &Mesh();
+				configuration.indices.clear();
+				configuration.vertices.clear();
+				configuration.material = materials[result[1]];
+			}
 			else if (type == "f") {
 
 				vector<string> indexValues;
@@ -144,33 +169,42 @@ MeshConfig ModelReader::parse(string& path)
 
 					Vertex v(vPos, vnPos, vtPos);
 
-					vertices.push_back(v);
+					configuration.vertices.push_back(v);
 					indiceTracker++;
 
 				}
 				// if quad, add indices respective of 2 triangles
 				if (result.size() > 4) {
-					vertexIndices.push_back(2 + currentVertexCount);
-					vertexIndices.push_back(1 + currentVertexCount);
-					vertexIndices.push_back(0 + currentVertexCount);
-					vertexIndices.push_back(3 + currentVertexCount);
-					vertexIndices.push_back(2 + currentVertexCount);
-					vertexIndices.push_back(0 + currentVertexCount);
+					configuration.indices.push_back(2 + currentVertexCount);
+					configuration.indices.push_back(1 + currentVertexCount);
+					configuration.indices.push_back(0 + currentVertexCount);
+					configuration.indices.push_back(3 + currentVertexCount);
+					configuration.indices.push_back(2 + currentVertexCount);
+					configuration.indices.push_back(0 + currentVertexCount);
 				}
 				else {
-					vertexIndices.push_back(2 + currentVertexCount);
-					vertexIndices.push_back(1 + currentVertexCount);
-					vertexIndices.push_back(0 + currentVertexCount);
+					configuration.indices.push_back(2 + currentVertexCount);
+					configuration.indices.push_back(1 + currentVertexCount);
+					configuration.indices.push_back(0 + currentVertexCount);
 				}
 				currentVertexCount += indiceTracker;
 				indiceTracker = 0;
 			}
 		}
-		configuration.indices = vertexIndices;
-		configuration.vertices = vertices;
+
+		if (tempMesh != nullptr) {
+			tempMesh->init(configuration);
+			tempObject->addMesh(*tempMesh);
+			delete tempMesh;
+		}
+
+		if (tempObject != nullptr) {
+			loadedModel.addObject(*tempObject);
+			delete tempObject;
+		}
 
 		file.close();
-		return configuration;
+		return loadedModel;
 	}
 }
 

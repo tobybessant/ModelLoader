@@ -11,7 +11,8 @@
 class Mesh
 {
 public:
-	Mesh(MeshConfig config);
+	Mesh();
+	void init(MeshConfig &config);
 	void render(GLuint* _program);
 	void translate(glm::vec3 translation);
 	void rotate(GLfloat amount, glm::vec3 axis);
@@ -19,6 +20,7 @@ public:
 private:
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
+	Material material;
 
 	void initBuffers();
 	void createTexture();

@@ -48,14 +48,14 @@ int main(int argc, char** argv) {
 	
 	ModelReader reader = ModelReader();
 	while (modelPath != "QQ") {
-		cout << "Path: ";
 		SetConsoleTextAttribute(hConsole, 2);
+		cout << "Path: ";
 		cin >> modelPath;
 
 		//check model file
 		if (reader.verifyFile(modelPath)) {
 			// read model file
-			MeshConfig config = reader.parse(modelPath);
+			Model model = reader.parse(modelPath);
 
 			// init services
 			GLFWServices glfw = GLFWServices();
@@ -67,11 +67,9 @@ int main(int argc, char** argv) {
 			ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
 			program.use();
 
-			Mesh model = Mesh(config);
-
 			while (!glfw.quit()) {
 				program.update();
-				model.render(program.id());
+				//model.render(program.id());
 				glfw.update();
 			}
 			glfw.destroy();

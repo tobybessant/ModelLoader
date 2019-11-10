@@ -127,8 +127,10 @@
     <ClCompile Include="GLFWServices.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="ModelReader.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
   </ItemGroup>
@@ -144,7 +146,9 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshConfig.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="ModelReader.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Vertex.h" />

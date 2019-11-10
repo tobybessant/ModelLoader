@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MeshConfig.h"
+#include "Model.h"
 
 #include <GL\glew.h>
 
@@ -16,7 +17,7 @@ class ModelReader
 {
 public:
 	bool verifyFile(std::string& path);
-	MeshConfig parse(std::string& path);
+	Model parse(std::string& path);
 	std::vector<std::string> split(const std::string& s, char delimiter);
 private:
 };

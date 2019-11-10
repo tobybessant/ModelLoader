@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vertex.h"
+#include "Material.h"
 
 #include <vector>
 #include <string>
@@ -9,5 +10,5 @@
 struct MeshConfig {
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
-	std::vector<std::string> materials;
+	Material material;
 };

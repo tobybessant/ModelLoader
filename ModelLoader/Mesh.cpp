@@ -30,13 +30,18 @@ enum Attrib_IDs { vPosition, nPosition, tPosition };
 GLuint Buffers[BUFFER_COUNT];
 GLuint texture1;
 
-Mesh::Mesh(MeshConfig config) 
+Mesh::Mesh() 
 {
-	vertices = config.vertices;
-	indices = config.indices;
+}
 
-	initBuffers();
-	createTexture();
+void Mesh::init(MeshConfig& _config)
+{
+	vertices = _config.vertices;
+	indices = _config.indices;
+	material = _config.material;
+
+	//initBuffers();
+	//createTexture();
 }
 
 void Mesh::render(GLuint* _program)
