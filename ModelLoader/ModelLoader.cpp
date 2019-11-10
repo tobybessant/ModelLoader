@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 	
 	ModelReader reader = ModelReader();
 	while (modelPath != "QQ") {
-		
+		cout << "Path: ";
 		SetConsoleTextAttribute(hConsole, 2);
 		cin >> modelPath;
 

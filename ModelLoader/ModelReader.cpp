@@ -46,7 +46,6 @@ MeshConfig ModelReader::parse(string& path)
 				pathComponents.push_back(result[1]);
 				string mtlPath;
 				for (unsigned int i = 0; i < pathComponents.size(); i++) {
-					// TODO: refactor...
 					mtlPath = mtlPath + pathComponents[i] + (i != pathComponents.size() - 1 ? '/' : '\0');
 				}
 
@@ -61,7 +60,6 @@ MeshConfig ModelReader::parse(string& path)
 						string mtlType = mtlResult[0];
 						if (mtlType == "newmtl") {
 							currentMaterial = mtlResult[1];
-
 							Material mat = Material();
 							materials[currentMaterial] = mat;
 							materials[currentMaterial].name = currentMaterial;
@@ -81,12 +79,10 @@ MeshConfig ModelReader::parse(string& path)
 						else if (mtlType == "d") {
 							std::string::size_type sz;
 							materials[currentMaterial].dissolve = stof(mtlResult[1], &sz);
-							cout << "hit Ka" << endl;
 						}
 						else if (mtlType == "map_d") {
 							string alphaPath = "";
 							for (unsigned int i = 0; i < pathComponents.size() - 1; i++) {
-								// TODO: refactor...
 								alphaPath = alphaPath + pathComponents[i] + '/';
 							}
 							materials[currentMaterial].alphaTextureMapPath = alphaPath + mtlResult[1];
@@ -94,14 +90,12 @@ MeshConfig ModelReader::parse(string& path)
 						else if (mtlType == "map_Kd") {
 							string diffusePath = "";
 							for (unsigned int i = 0; i < pathComponents.size() - 1; i++) {
-								// TODO: refactor...
 								diffusePath = diffusePath + pathComponents[i] + '/';
 							}
 							materials[currentMaterial].diffuseTextureMapPath = diffusePath + mtlResult[1];
 						}
 					}
 				}
-
 			}
 			else if (type == "v") {
 				glm::vec3 tempVector;
