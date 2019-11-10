@@ -195,12 +195,10 @@ Model ModelReader::parse(string& path)
 		if (tempMesh != nullptr) {
 			tempMesh->init(configuration);
 			tempObject->addMesh(*tempMesh);
-			delete tempMesh;
 		}
 
 		if (tempObject != nullptr) {
 			loadedModel.addObject(*tempObject);
-			delete tempObject;
 		}
 
 		file.close();
