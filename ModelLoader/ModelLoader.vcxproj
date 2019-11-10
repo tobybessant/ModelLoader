@@ -141,6 +141,7 @@
     <ClInclude Include="GLEWServices.h" />
     <ClInclude Include="GLFWServices.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshConfig.h" />
     <ClInclude Include="ModelReader.h" />

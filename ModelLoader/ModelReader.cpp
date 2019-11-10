@@ -4,6 +4,8 @@ using namespace std;
 #include "ModelReader.h"
 #include "MeshConfig.h"
 #include "Vertex.h"
+#include <map>
+#include "Material.h"
 
 bool ModelReader::verifyFile(std::string& path)
 {
@@ -35,14 +37,71 @@ MeshConfig ModelReader::parse(string& path)
 		vector<glm::vec3> vertex_normals;
 		vector<glm::vec2> vertex_texture_coords;
 
-		vector<string> materials;
+		map<string, Material>materials;
 
 		while (getline(file, line)) {
 			vector<string> result = split(line, ' ');
 			string type = result[0];
 			if (type == "mtllib") {
-				string mtlLib = result[1];
-				
+				pathComponents.push_back(result[1]);
+				string mtlPath;
+				for (unsigned int i = 0; i < pathComponents.size(); i++) {
+					// TODO: refactor...
+					mtlPath = mtlPath + pathComponents[i] + (i != pathComponents.size() - 1 ? '/' : '\0');
+				}
+
+				string mtlLine;
+				ifstream mtlFile(mtlPath);
+
+				string currentMaterial = "";
+
+				while (getline(mtlFile, mtlLine)) {
+					vector<string> mtlResult = split(mtlLine, ' ');
+					if (mtlResult.size() > 0) {
+						string mtlType = mtlResult[0];
+						if (mtlType == "newmtl") {
+							currentMaterial = mtlResult[1];
+
+							Material mat = Material();
+							materials[currentMaterial] = mat;
+							materials[currentMaterial].name = currentMaterial;
+						}
+						else if (mtlType == "Ka") {
+							std::string::size_type sz;
+							materials[currentMaterial].ambient = glm::vec3(stof(mtlResult[1], &sz), stof(mtlResult[2], &sz), stof(mtlResult[3], &sz));
+						}
+						else if (mtlType == "Kd") {
+							std::string::size_type sz;
+							materials[currentMaterial].diffuse = glm::vec3(stof(mtlResult[1], &sz), stof(mtlResult[2], &sz), stof(mtlResult[3], &sz));
+						}
+						else if (mtlType == "Ks") {
+							std::string::size_type sz;
+							materials[currentMaterial].specular = glm::vec3(stof(mtlResult[1], &sz), stof(mtlResult[2], &sz), stof(mtlResult[3], &sz));
+						}
+						else if (mtlType == "d") {
+							std::string::size_type sz;
+							materials[currentMaterial].dissolve = stof(mtlResult[1], &sz);
+							cout << "hit Ka" << endl;
+						}
+						else if (mtlType == "map_d") {
+							string alphaPath = "";
+							for (unsigned int i = 0; i < pathComponents.size() - 1; i++) {
+								// TODO: refactor...
+								alphaPath = alphaPath + pathComponents[i] + '/';
+							}
+							materials[currentMaterial].alphaTextureMapPath = alphaPath + mtlResult[1];
+						}
+						else if (mtlType == "map_Kd") {
+							string diffusePath = "";
+							for (unsigned int i = 0; i < pathComponents.size() - 1; i++) {
+								// TODO: refactor...
+								diffusePath = diffusePath + pathComponents[i] + '/';
+							}
+							materials[currentMaterial].diffuseTextureMapPath = diffusePath + mtlResult[1];
+						}
+					}
+				}
+
 			}
 			else if (type == "v") {
 				glm::vec3 tempVector;
