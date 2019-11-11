@@ -16,3 +16,10 @@ void Object::render(GLuint* _program)
 		m.render(_program);
 	}
 }
+
+void Object::init()
+{
+	for (Mesh m : meshes) {
+		m.init();
+	}
+}

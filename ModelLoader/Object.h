@@ -9,6 +9,8 @@ public:
 	void addMesh(Mesh mesh);
 	void render(GLuint* _program);
 
+	void init();
+
 private:
 	std::string name;
 	std::vector<Mesh> meshes;

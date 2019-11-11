@@ -142,7 +142,7 @@ Model ModelReader::parse(string& path)
 			}
 			else if (type == "usemtl") {
 				if (tempMesh != nullptr) {
-					tempMesh->init(configuration);
+					tempMesh->setup(configuration);
 					tempObject->addMesh(*tempMesh);
 				}
 
@@ -193,7 +193,7 @@ Model ModelReader::parse(string& path)
 		}
 
 		if (tempMesh != nullptr) {
-			tempMesh->init(configuration);
+			tempMesh->setup(configuration);
 			tempObject->addMesh(*tempMesh);
 		}
 

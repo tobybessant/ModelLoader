@@ -67,6 +67,8 @@ int main(int argc, char** argv) {
 			ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
 			program.use();
 
+			model.init();
+
 			while (!glfw.quit()) {
 				program.update();
 				model.render(program.id());

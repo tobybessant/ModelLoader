@@ -28,21 +28,17 @@ void Mesh::setup(MeshConfig& _config)
 	vertices = _config.vertices;
 	indices = _config.indices;
 	material = _config.material;
-
-	initBuffers();
-	createTexture();
 }
 
 void Mesh::init()
 {
-	// TODO: Need to make 'recursive' init function on model that calls it for objects -> meshes
 	initBuffers();
 	createTexture();
 }
 
 void Mesh::render(GLuint* _program)
 {
-	glBindVertexArray(VAO);
+	
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -55,7 +51,7 @@ void Mesh::render(GLuint* _program)
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
 	model = glm::rotate(model, glm::radians((float) glfwGetTime() * 25), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+	model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 
 	// creating the view matrix
 	glm::mat4 view = glm::mat4(1.0f);
@@ -69,7 +65,7 @@ void Mesh::render(GLuint* _program)
 	//adding the Uniform to the shader
 	int mvpLoc = glGetUniformLocation(*_program, "mvp");
 	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
-
+	glBindVertexArray(VAO);
 }
 
 void Mesh::translate(glm::vec3 translation)
@@ -88,6 +84,9 @@ void Mesh::initBuffers()
 {
 	// create buffers
 	glGenVertexArrays(1, &VAO);
+	// bind VAO
+	glBindVertexArray(VAO);
+
 	glGenBuffers(BUFFER_COUNT, Buffers);
 
 	// load vertex data into buffers
@@ -108,8 +107,7 @@ void Mesh::initBuffers()
 	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, texture)));
 	glEnableVertexAttribArray(tPosition);
 
-	// bind VAO
-	glBindVertexArray(VAO);
+
 	
 }
 

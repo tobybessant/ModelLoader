@@ -11,3 +11,10 @@ void Model::render(GLuint* _program)
 		o.render(_program);
 	}
 }
+
+void Model::init()
+{
+	for (Object o : objects) {
+		o.init();
+	}
+}
