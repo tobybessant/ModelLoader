@@ -39,13 +39,12 @@ void Mesh::init()
 void Mesh::render(GLuint* _program)
 {
 	
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	GLuint numVertices = indices.size();
-	glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
-
+	glActiveTexture(GL_TEXTURE1);
 	glUniform1i(glGetUniformLocation(*_program, "texture1"), 0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glBindVertexArray(VAO);
 
 	// creating the model matrix
 	glm::mat4 model = glm::mat4(1.0f);
@@ -62,10 +61,14 @@ void Mesh::render(GLuint* _program)
 
 	// Adding all matrices up to create combined matrix
 	glm::mat4 mvp = projection * view * model;
+
 	//adding the Uniform to the shader
 	int mvpLoc = glGetUniformLocation(*_program, "mvp");
 	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
-	glBindVertexArray(VAO);
+
+	GLuint numVertices = indices.size();
+	glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
+	
 }
 
 void Mesh::translate(glm::vec3 translation)
@@ -82,11 +85,11 @@ void Mesh::scaleModel(glm::vec3 scale)
 
 void Mesh::initBuffers()
 {
-	// create buffers
+	// create and bind VAO buffers
 	glGenVertexArrays(1, &VAO);
-	// bind VAO
 	glBindVertexArray(VAO);
 
+	// generate VBO / EBO
 	glGenBuffers(BUFFER_COUNT, Buffers);
 
 	// load vertex data into buffers
@@ -98,7 +101,7 @@ void Mesh::initBuffers()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 
 	// tell opengl how to parse vertex data
-	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(0));
+	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, position)));
 	glEnableVertexAttribArray(vPosition);
 	
 	glVertexAttribPointer(nPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, normal)));
@@ -106,8 +109,6 @@ void Mesh::initBuffers()
 
 	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, texture)));
 	glEnableVertexAttribArray(tPosition);
-
-
 	
 }
 
@@ -125,8 +126,9 @@ void Mesh::createTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// load image, create texture and generate mipmaps
 	GLint width, height, nrChannels;
+
 	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-	unsigned char* data = stbi_load("models/Creeper-obj/Texture.png", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load(material.diffuseTextureMapPath.c_str(), &width, &height, &nrChannels, 0);
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
