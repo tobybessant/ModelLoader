@@ -48,9 +48,9 @@ void Mesh::render(GLuint* _program)
 
 	// creating the model matrix
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 	model = glm::rotate(model, glm::radians((float) glfwGetTime() * 25), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 
 	// creating the view matrix
 	glm::mat4 view = glm::mat4(1.0f);
