@@ -131,6 +131,7 @@
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="ModelReader.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="ObjReader.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
   </ItemGroup>
@@ -149,6 +150,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelReader.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="ObjReader.h" />
     <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Vertex.h" />
