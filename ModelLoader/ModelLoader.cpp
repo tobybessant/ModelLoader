@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 	SetConsoleTextAttribute(hConsole, 8);
 	cout << "Example: models/folder1/model.obj, models/folder2/model2.obj " << endl;
 	
-	const char* path = "models/creeper-obj/creeper.obj";
+	const char* path = "models/creeper-obj/creeper2.obj";
 
 	ObjReader oReader = ObjReader();
 
@@ -61,7 +61,8 @@ int main(int argc, char** argv) {
 		//reader.verifyFile(modelPath)
 		if (true) {
 			// read model file
-			Model model = oReader.parse(path);
+			Model model = Model();
+			oReader.parse(path, model);
 
 			// init services
 			GLFWServices glfw = GLFWServices();

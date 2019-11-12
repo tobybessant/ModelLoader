@@ -3,7 +3,7 @@
 
 using namespace std;
 
-Model ObjReader::parse(const char* &path)
+void ObjReader::parse(const char* &path, Model &model)
 {
 	FILE* fp;
 	errno_t err;
@@ -33,7 +33,7 @@ Model ObjReader::parse(const char* &path)
 			}
 			if (strstr(line, "o ")) {
 				if (templateObject != nullptr) {
-					loadedModel.addObject(*templateObject);
+					model.addObject(*templateObject);
 				}
 
 				templateObject = &Object();
@@ -128,10 +128,8 @@ Model ObjReader::parse(const char* &path)
 	}
 
 	if (templateObject != nullptr) {
-		loadedModel.addObject(*templateObject);
+		model.addObject(*templateObject);
 	}
-
-	return loadedModel;
 }
 
 bool ObjReader::verifyFile(const char* path)

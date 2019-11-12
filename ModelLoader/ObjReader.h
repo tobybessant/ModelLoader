@@ -12,7 +12,7 @@
 class ObjReader
 {
 public:
-	Model parse(const char* &path);
+	void parse(const char* &path, Model &model);
 	bool verifyFile(const char* path);
 
 private:
