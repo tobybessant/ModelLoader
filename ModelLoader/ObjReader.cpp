@@ -1,5 +1,5 @@
 #include "ObjReader.h"
-#include <regex>
+#include <map>
 
 using namespace std;
 
@@ -9,19 +9,38 @@ Model ObjReader::parse(const char* &path)
 	errno_t err;
 	char  line[255];
 
+	std::map<std::string, Material>materials;
+
 	vector<glm::vec3> vertexStore;
 	vector<glm::vec2> textureStore;
 	vector<glm::vec3> normalStore;
 
-	vector<Vertex> vertices;
 	vector<GLuint> indices;
-
+	vector<Vertex> vertices;
 	GLuint currentVertexCount = 0;
+
+	Object* templateObject = nullptr;
+	Mesh* templateMesh = nullptr;
+
+	Model loadedModel = Model();
 
 	err = fopen_s(&fp, path, "r");
 	if (err == 0) {
 		while (fgets(line, sizeof(line), fp) != NULL)
 		{
+			if (strstr(line, "mtlib ")) {
+
+			}
+			if (strstr(line, "o ")) {
+				if (templateObject != nullptr) {
+					loadedModel.addObject(*templateObject);
+				}
+
+				templateObject = &Object();
+				char* namePtr = strchr(line, ' ');
+				templateObject->setName(namePtr);
+			}
+
 			if (strstr(line, "v ") != NULL) {
 				vertexStore.push_back(createVector3(line));
 			}
@@ -34,13 +53,85 @@ Model ObjReader::parse(const char* &path)
 				normalStore.push_back(createVector3(line));
 			}
 
+			if(strstr(line, "usemtl ")) {
+				if (templateMesh != nullptr) {
+					// TODO: fetch and add material
+					templateMesh->indices = indices;
+					templateMesh->vertices = vertices;
+					templateObject->addMesh(*templateMesh);
+				}
+
+				// wipe 
+				templateMesh = &Mesh();
+				indices = vector<GLuint>();
+				vertices = vector<Vertex>();
+			}
+
 			if (strstr(line, "f ") != NULL) {
-				currentVertexCount = vertices.size();
-				createFaceVertices(line, &vertexStore, &textureStore, &normalStore, &vertices, &indices, &currentVertexCount);
+
+				glm::vec3 v;
+				glm::vec2 vt;
+				glm::vec3 vn;
+
+				char* index = nullptr;
+				char* nextIndex = nullptr;
+
+				index = strtok_s((char*)line, " /", &nextIndex);
+				index = strtok_s(nextIndex, " /", &nextIndex);
+
+				int indexType = 0;
+				while (index != NULL) {
+
+					if (indexType % 3 == 0) {
+						v = vertexStore.at(std::stoi(index) - 1);
+					}
+					else if (indexType % 3 == 1) {
+						vt = textureStore.at(std::stoi(index) - 1);
+					}
+					else {
+						GLuint vi = std::stoi(index);
+						vn = normalStore.at(vi - 1);
+
+						Vertex newV = Vertex(v, vn, vt);
+						vertices.push_back(newV);
+					}
+
+					index = strtok_s(nextIndex, " /", &nextIndex);
+					indexType++;
+				}
+
+				if (indexType ==  12) {
+					indices.push_back(2 + currentVertexCount);
+					indices.push_back(1 + currentVertexCount);
+					indices.push_back(0 + currentVertexCount);
+					indices.push_back(3 + currentVertexCount);
+					indices.push_back(2 + currentVertexCount);
+					indices.push_back(0 + currentVertexCount);
+
+					currentVertexCount = currentVertexCount + 4;
+				}
+				else {
+					indices.push_back(2 + currentVertexCount);
+					indices.push_back(1 + currentVertexCount);
+					indices.push_back(0 + currentVertexCount);
+
+					currentVertexCount = currentVertexCount + 3;
+				}
 			}
 		}
 	}
-	return Model();
+
+	if (templateMesh != nullptr) {
+		templateMesh->indices = indices;
+		templateMesh->vertices = vertices;
+		templateObject->addMesh(*templateMesh);
+	}
+
+	if (templateObject != nullptr) {
+		loadedModel.addObject(*templateObject);
+	}
+
+	return loadedModel;
 }
 
 bool ObjReader::verifyFile(const char* path)
@@ -52,7 +143,7 @@ glm::vec3 ObjReader::createVector3(char* line) {
 	char* token;
 	char* nextToken = nullptr;
 
-	float values[3];
+	float values[3] { 0, 0, 0 };
 	int counter = 0;
 
 	token = strtok_s(line, " ", &nextToken);
@@ -73,7 +164,7 @@ glm::vec2 ObjReader::createVector2(char* line) {
 	char* token;
 	char* nextToken = nullptr;
 
-	float values[2];
+	float values[2] { 0, 0 };
 	int counter = 0;
 
 	token = strtok_s(line, " ", &nextToken);
@@ -90,101 +181,3 @@ glm::vec2 ObjReader::createVector2(char* line) {
 
 }
 
-void ObjReader::createFaceVertices(char* line, vector<glm::vec3>* positions, vector<glm::vec2>* textureCoordinates, vector<glm::vec3>* normals, vector<Vertex>* vertices, vector<GLuint>* indices, GLuint* currentVertexCount)
-{
-	/*
-	vector<Vertex> result;
-
-	char* token;
-	char* nextToken = nullptr;
-
-	vector<char*> faceVertices;
-	std::string vertex(line);
-	int faceVertexCount = 0;
-	smatch vertexMatch;
-	regex vertexData("\\d+\/\\d+\/\\d+");
-	while (regex_search(vertex, vertexMatch, vertexData)) {
-		string tempVertexIndices = vertexMatch.str(0);
-		faceVertexCount++;
-		glm::vec3 v;
-		glm::vec2 vt;
-		glm::vec3 vn;
-
-		std::string index(vertexMatch.str(0));
-		smatch indexMatch;
-		regex indexData("\\d+");
-		int indexType = 0;
-		while (regex_search(index, indexMatch, indexData)) {
-
-			switch (indexType) {
-				case 0:
-					v = positions->at(stoi(indexMatch.str(0)) - 1);
-					break;
-				case 1:
-					vt = textureCoordinates->at(stoi(indexMatch.str(0)) - 1);
-					break;
-				case 2:
-					vn = normals->at(stoi(indexMatch.str(0)) - 1);
-					break;
-			}
-			indexType++;
-			index = indexMatch.suffix().str();
-		}
-
-		vertices->push_back(Vertex(v, vn, vt));
-
-		// suffix to find the rest of the string. 
-		vertex = vertexMatch.suffix().str();
-	}*/
-	
-	vector<string> tokens;
-	string token;
-	istringstream tokenStream(line);
-	while (getline(tokenStream, token, ' '))
-	{
-		tokens.push_back(token.c_str());
-	}
-
-	for (int i = 1; i < tokens.size(); i++) {
-		glm::vec3 v;
-		glm::vec2 vt;
-		glm::vec3 vn;
-
-		char* index;
-		char* nextIndex = nullptr;
-
-		int indices[3];
-		int counter = 0;
-		char* temp = _strdup(tokens[i].c_str());
-		index = strtok_s(_strdup(temp), "/", &nextIndex);
-		while (index != NULL) {
-
-			indices[counter] = stoi(index);
-
-			// next token
-			counter++;
-			index = strtok_s(NULL, "/", &nextIndex);
-		}
-
-		v = positions->at(indices[0] - 1);
-		vt = textureCoordinates->at(indices[1] - 1);
-		vn = normals->at(indices[2] - 1);
-
-		vertices->push_back(Vertex(v, vn, vt));
-	}
-
-	if (tokens.size() - 1 == 4) {
-		indices->push_back(2 + *currentVertexCount);
-		indices->push_back(1 + *currentVertexCount);
-		indices->push_back(0 + *currentVertexCount);
-		indices->push_back(3 + *currentVertexCount);
-		indices->push_back(2 + *currentVertexCount);
-		indices->push_back(0 + *currentVertexCount);
-	}
-	else {
-		indices->push_back(2 + *currentVertexCount);
-		indices->push_back(1 + *currentVertexCount);
-		indices->push_back(0 + *currentVertexCount);
-	}
-
-}
