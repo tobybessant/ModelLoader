@@ -4,7 +4,7 @@
 class Object
 {
 public:
-	void setName(std::string &_name);
+	void setName(char* &_name);
 	
 	void addMesh(Mesh mesh);
 	void render(GLuint* _program);
@@ -12,7 +12,7 @@ public:
 	void init();
 
 private:
-	std::string name;
+	char* name;
 	std::vector<Mesh> meshes;
 };
 

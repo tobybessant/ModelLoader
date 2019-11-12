@@ -16,6 +16,7 @@ bool ModelReader::verifyFile(std::string& path)
 
 Model ModelReader::parse(string& path)
 {
+	/*
 	vector<string> pathComponents = split(path, '/');
 	string fileName = pathComponents[pathComponents.size() - 1];
 	pathComponents.pop_back();
@@ -204,6 +205,8 @@ Model ModelReader::parse(string& path)
 		file.close();
 		return loadedModel;
 	}
+	*/
+return Model();
 }
 
 vector<string> ModelReader::split(const string& s, char delimiter)

@@ -1,6 +1,6 @@
 #include "Object.h"
 
-void Object::setName(std::string& _name)
+void Object::setName(char* &_name)
 {
 	name = _name;
 }

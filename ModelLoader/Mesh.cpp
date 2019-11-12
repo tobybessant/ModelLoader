@@ -83,6 +83,16 @@ void Mesh::scaleModel(glm::vec3 scale)
 {
 }
 
+void Mesh::setIndices(std::vector<GLuint> i)
+{
+	indices = i;
+}
+
+void Mesh::setVertexes(std::vector<Vertex> v)
+{
+	vertices = v;
+}
+
 void Mesh::initBuffers()
 {
 	// create and bind VAO buffers

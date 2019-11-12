@@ -13,6 +13,9 @@ class Mesh
 public:
 	Mesh();
 	void setup(MeshConfig& config);
+	void setIndices(std::vector<GLuint> i);
+	void setVertexes(std::vector<Vertex> v);
+
 	void init();
 	void render(GLuint* _program);
 	void translate(glm::vec3 translation);

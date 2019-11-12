@@ -56,8 +56,8 @@ Model ObjReader::parse(const char* &path)
 			if(strstr(line, "usemtl ")) {
 				if (templateMesh != nullptr) {
 					// TODO: fetch and add material
-					templateMesh->indices = indices;
-					templateMesh->vertices = vertices;
+					templateMesh->setIndices(indices);
+					templateMesh->setVertexes(vertices);
 					templateObject->addMesh(*templateMesh);
 				}
 
@@ -122,8 +122,8 @@ Model ObjReader::parse(const char* &path)
 	}
 
 	if (templateMesh != nullptr) {
-		templateMesh->indices = indices;
-		templateMesh->vertices = vertices;
+		templateMesh->setIndices(indices);
+		templateMesh->setVertexes(vertices);
 		templateObject->addMesh(*templateMesh);
 	}
 
