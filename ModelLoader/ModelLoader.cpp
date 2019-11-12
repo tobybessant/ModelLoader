@@ -18,14 +18,6 @@ using namespace std;
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 int main(int argc, char** argv) {
-	
-	const char* path = "models/lowpolyboat-obj/low_poly_boat.obj";
-
-	ObjReader oReader = ObjReader();
-	oReader.parse(path);
-
-	/*
-
 	string modelPath;
 
 	// set console colour to cyan
@@ -56,16 +48,20 @@ int main(int argc, char** argv) {
 	SetConsoleTextAttribute(hConsole, 8);
 	cout << "Example: models/folder1/model.obj, models/folder2/model2.obj " << endl;
 	
-	ModelReader reader = ModelReader();
+	const char* path = "models/creeper-obj/creeper.obj";
+
+	ObjReader oReader = ObjReader();
+
 	while (modelPath != "QQ") {
 		SetConsoleTextAttribute(hConsole, 2);
 		cout << "Path: ";
 		cin >> modelPath;
 
 		//check model file
-		if (reader.verifyFile(modelPath)) {
+		//reader.verifyFile(modelPath)
+		if (true) {
 			// read model file
-			Model model = reader.parse(modelPath);
+			Model model = oReader.parse(path);
 
 			// init services
 			GLFWServices glfw = GLFWServices();
@@ -91,5 +87,4 @@ int main(int argc, char** argv) {
 			cout << "ERR: At least one invalid/non-existant model file found. Please remove and try again." << endl;
 		}
 	}
-	*/
 }

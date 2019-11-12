@@ -180,4 +180,3 @@ glm::vec2 ObjReader::createVector2(char* line) {
 	return glm::vec2(values[0], values[1]);
 
 }
-
