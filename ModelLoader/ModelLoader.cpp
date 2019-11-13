@@ -60,9 +60,6 @@ int main(int argc, char** argv) {
 		//check model file
 		//reader.verifyFile(modelPath)
 		if (true) {
-			// read model file
-			Model model = Model();
-			oReader.parse(path, model);
 
 			// init services
 			GLFWServices glfw = GLFWServices();
@@ -74,7 +71,9 @@ int main(int argc, char** argv) {
 			ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
 			program.use();
 
-			model.init();
+			// read model file
+			Model model = Model();
+			oReader.parse(path, model);
 
 			while (!glfw.quit()) {
 				program.update();

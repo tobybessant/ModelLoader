@@ -54,7 +54,7 @@ void Mesh::render(GLuint* _program)
 
 	// creating the view matrix
 	glm::mat4 view = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f));
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -2.0f));
 
 	// creating the projection matrix
 	glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3, 0.1f, 20.0f);

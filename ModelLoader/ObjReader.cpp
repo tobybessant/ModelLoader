@@ -58,6 +58,7 @@ void ObjReader::parse(const char* &path, Model &model)
 					// TODO: fetch and add material
 					templateMesh->setIndices(indices);
 					templateMesh->setVertexes(vertices);
+					templateMesh->init();
 					templateObject->addMesh(*templateMesh);
 				}
 
