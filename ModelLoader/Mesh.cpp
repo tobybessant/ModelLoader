@@ -92,6 +92,11 @@ void Mesh::setVertexes(std::vector<Vertex> v)
 	vertices = v;
 }
 
+void Mesh::setMaterial(Material mat)
+{
+	material = mat;
+}
+
 void Mesh::initBuffers()
 {
 	// create and bind VAO buffers

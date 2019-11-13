@@ -65,9 +65,10 @@ int main(int argc, char** argv) {
 			GLEWServices glew = GLEWServices();
 		
 			// set global gl states
-			glFrontFace(GL_CW);
-			glCullFace(GL_BACK);
-			glEnable(GL_CULL_FACE);
+			//glFrontFace(GL_CCW);
+			//glCullFace(GL_BACK);
+			//glEnable(GL_CULL_FACE);
+			glEnable(GL_DEPTH_TEST);
 
 			// create shader program
 			ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
@@ -79,10 +80,6 @@ int main(int argc, char** argv) {
 			while (!glfw.quit()) {
 				program.update();
 				model.render(program.id());
-				//glBindVertexArray(model.objects[0].meshes[0].VAO);
-				//model.objects[0].meshes[0].render(program.id());
-				//glBindVertexArray(model.objects[0].meshes[1].VAO);
-				//model.objects[0].meshes[1].render(program.id());
 				glfw.update();
 			}
 			glfw.destroy();

@@ -15,6 +15,7 @@ public:
 	void setup(MeshConfig& config);
 	void setIndices(std::vector<GLuint> i);
 	void setVertexes(std::vector<Vertex> v);
+	void setMaterial(Material mat);
 
 	void init();
 	void render(GLuint& _program);
@@ -32,8 +33,8 @@ private:
 
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
+	
 	Material material;
-
 	GLuint texture;
 
 	GLfloat offset = 0.0f;
@@ -41,4 +42,3 @@ private:
 	void initBuffers();
 	void createTexture();
 };
-

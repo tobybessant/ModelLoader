@@ -28,10 +28,12 @@ void ObjReader::parse(string &path, Model &model)
 	if (err == 0) {
 		while (fgets(line, sizeof(line), fp) != NULL)
 		{
-			if (strstr(line, "mtlib ")) {
-
+			if (strstr(line, "mtllib ") != NULL) {
+				string mtlPath = getDirectory(path) + getFileName(line);
+				cout << mtlPath;
+				loadMtl(mtlPath, materials);
 			}
-			if (strstr(line, "o ")) {
+			if (strstr(line, "o ") != NULL) {
 				if (templateObject != nullptr) {
 					model.addObject(*templateObject);
 				}
@@ -55,9 +57,10 @@ void ObjReader::parse(string &path, Model &model)
 
 			if(strstr(line, "usemtl ")) {
 				if (templateMesh != nullptr) {
-					// TODO: fetch and add material
 					templateMesh->setIndices(indices);
 					templateMesh->setVertexes(vertices);
+					//TODO extract material name
+					//templateMesh->setMaterial(materials[0]);
 					templateMesh->init();
 					templateObject->addMesh(*templateMesh);
 					currentVertexCount = 0;
@@ -105,19 +108,19 @@ void ObjReader::parse(string &path, Model &model)
 				}
 
 				if (indexType ==  12) {
-					indices.push_back(2 + currentVertexCount);
+					indices.push_back(0 + currentVertexCount);
 					indices.push_back(1 + currentVertexCount);
-					indices.push_back(0 + currentVertexCount);
-					indices.push_back(3 + currentVertexCount);
 					indices.push_back(2 + currentVertexCount);
 					indices.push_back(0 + currentVertexCount);
+					indices.push_back(2 + currentVertexCount);
+					indices.push_back(3 + currentVertexCount);
 
 					currentVertexCount = currentVertexCount + 4;
 				}
 				else {
-					indices.push_back(2 + currentVertexCount);
-					indices.push_back(1 + currentVertexCount);
 					indices.push_back(0 + currentVertexCount);
+					indices.push_back(1 + currentVertexCount);
+					indices.push_back(2 + currentVertexCount);
 
 					currentVertexCount = currentVertexCount + 3;
 				}
@@ -137,9 +140,66 @@ void ObjReader::parse(string &path, Model &model)
 	}
 }
 
-bool ObjReader::verifyFile(const char* path)
+
+void ObjReader::loadMtl(std::string& mtlPath, std::map<std::string, Material>& materials)
 {
-	return true;
+	FILE* mtlFp;
+	errno_t mtlErr;
+	char mtlLine[255];
+
+	Material* tempMaterial = nullptr;
+
+	char* pos;
+	if ((pos = strchr((char*)mtlPath.c_str(), '\n')) != NULL)
+		* pos = '\0';
+
+	mtlErr = fopen_s(&mtlFp, mtlPath.c_str(), "r");
+	if (mtlErr == 0) {
+		while (fgets(mtlLine, sizeof(mtlLine), mtlFp) != NULL)
+		{
+			if (strstr(mtlLine, "newmtl ")) {
+				if (tempMaterial != nullptr) {
+					string key = tempMaterial->name;
+					materials[key] = *tempMaterial;
+				}
+
+				Material mat = Material();
+				tempMaterial = &mat;
+				char* name = getValue(mtlLine);
+				tempMaterial->name = name;
+			}
+
+			if (strstr(mtlLine, "Ka ")) {
+				tempMaterial->ambient = createVector3(mtlLine);
+			}
+
+			if (strstr(mtlLine, "Kd ") != NULL) {
+				tempMaterial->diffuse = createVector3(mtlLine);
+			}
+
+			if (strstr(mtlLine, "Ks ") != NULL) {
+				tempMaterial->specular = createVector3(mtlLine);
+			}
+
+			if (strstr(mtlLine, "d ") != NULL) {
+				tempMaterial->dissolve = stof(getValue(mtlLine));
+			}
+
+			if (strstr(mtlLine, "map_d ") != NULL) {
+				// get alpha path
+				tempMaterial->alphaTextureMapPath = getDirectory(mtlPath) + getFileName(mtlLine);
+			}
+
+			if (strstr(mtlLine, "map_Kd ") != NULL) {
+				// get diffuse path
+				tempMaterial->diffuseTextureMapPath = getDirectory(mtlPath) + getFileName(mtlLine);
+			}
+		}
+	}
+
+	if (tempMaterial != nullptr) {
+		materials[tempMaterial->name] = *tempMaterial;
+	}
 }
 
 glm::vec3 ObjReader::createVector3(char* line) {
@@ -182,4 +242,45 @@ glm::vec2 ObjReader::createVector2(char* line) {
 
 	return glm::vec2(values[0], values[1]);
 
+}
+
+char* ObjReader::getValue(char* line)
+{
+	char* token;
+	char* nextToken = nullptr;
+
+	char* values[1]{ 0 };
+	int counter = 0;
+
+	token = strtok_s(line, " ", &nextToken);
+	while (token != NULL) {
+		if (counter > 0) {
+			values[counter - 1] = token;
+		}
+		// next token
+		counter++;
+		token = strtok_s(NULL, " ", &nextToken);
+	}
+
+	return values[0];
+}
+
+std::string ObjReader::getDirectory(std::string& originalPath) {
+	
+	string directory;
+	const size_t lastSlashIndex = originalPath.rfind('/');
+	if (std::string::npos != lastSlashIndex)
+	{
+		directory = originalPath.substr(0, lastSlashIndex);
+	}
+	directory += '/';
+
+	return directory;
+}
+
+std::string ObjReader::getFileName(char* line)
+{
+	char* result = strchr(line, ' ');
+	*(++result);
+	return (string)result;
 }
