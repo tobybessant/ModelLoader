@@ -157,16 +157,19 @@ void ObjReader::loadMtl(std::string& mtlPath, std::map<std::string, Material>& m
 	if (mtlErr == 0) {
 		while (fgets(mtlLine, sizeof(mtlLine), mtlFp) != NULL)
 		{
+			if ((pos = strchr(mtlLine, '\n')) != NULL)
+				* pos = '\0';
+
 			if (strstr(mtlLine, "newmtl ")) {
+				// TODO: check the value the line pointer points to is not being modified / make sure to duplicate value.
 				if (tempMaterial != nullptr) {
 					string key = tempMaterial->name;
 					materials[key] = *tempMaterial;
 				}
 
 				Material mat = Material();
+				mat.name = getValue(mtlLine);
 				tempMaterial = &mat;
-				char* name = getValue(mtlLine);
-				tempMaterial->name = name;
 			}
 
 			if (strstr(mtlLine, "Ka ")) {
@@ -246,13 +249,16 @@ glm::vec2 ObjReader::createVector2(char* line) {
 
 char* ObjReader::getValue(char* line)
 {
+	int length = strlen(line);
+	char dupLine[length];
+	strcpy();
 	char* token;
 	char* nextToken = nullptr;
 
 	char* values[1]{ 0 };
 	int counter = 0;
 
-	token = strtok_s(line, " ", &nextToken);
+	token = strtok_s(dupLine, " ", &nextToken);
 	while (token != NULL) {
 		if (counter > 0) {
 			values[counter - 1] = token;
