@@ -10,7 +10,7 @@ void Object::addMesh(Mesh mesh)
 	meshes.push_back(mesh);
 }
 
-void Object::render(GLuint* _program)
+void Object::render(GLuint& _program)
 {
 	for (Mesh m : meshes) {
 		m.render(_program);

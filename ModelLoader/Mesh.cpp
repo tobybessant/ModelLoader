@@ -36,19 +36,11 @@ void Mesh::init()
 	createTexture();
 }
 
-void Mesh::render(GLuint* _program)
+void Mesh::render(GLuint &_program)
 {
-	
-	glActiveTexture(GL_TEXTURE1);
-	glUniform1i(glGetUniformLocation(*_program, "texture1"), 0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glBindVertexArray(VAO);
-
 	// creating the model matrix
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f + offset, 0.0f, 0.0f));
 	model = glm::rotate(model, glm::radians((float) glfwGetTime() * 25), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 
@@ -63,11 +55,18 @@ void Mesh::render(GLuint* _program)
 	glm::mat4 mvp = projection * view * model;
 
 	//adding the Uniform to the shader
-	int mvpLoc = glGetUniformLocation(*_program, "mvp");
+	int mvpLoc = glGetUniformLocation(_program, "mvp");
 	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+	
 
-	GLuint numVertices = indices.size();
-	glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glBindVertexArray(VAO);
+	glUniform1i(glGetUniformLocation(_program, "texture1"), 0);
+
+	//glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	
 }
 
@@ -120,6 +119,7 @@ void Mesh::initBuffers()
 	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, texture)));
 	glEnableVertexAttribArray(tPosition);
 	
+	//glBindVertexArray(0);
 }
 
 void Mesh::createTexture()
@@ -150,8 +150,4 @@ void Mesh::createTexture()
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(data);
-
-	glFrontFace(GL_CW);
-	glCullFace(GL_BACK);
-	glEnable(GL_CULL_FACE);
 }

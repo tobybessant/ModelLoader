@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void ObjReader::parse(const char* &path, Model &model)
+void ObjReader::parse(string &path, Model &model)
 {
 	FILE* fp;
 	errno_t err;
@@ -24,7 +24,7 @@ void ObjReader::parse(const char* &path, Model &model)
 
 	Model loadedModel = Model();
 
-	err = fopen_s(&fp, path, "r");
+	err = fopen_s(&fp, path.c_str(), "r");
 	if (err == 0) {
 		while (fgets(line, sizeof(line), fp) != NULL)
 		{
@@ -60,10 +60,13 @@ void ObjReader::parse(const char* &path, Model &model)
 					templateMesh->setVertexes(vertices);
 					templateMesh->init();
 					templateObject->addMesh(*templateMesh);
+					currentVertexCount = 0;
 				}
 
 				// wipe 
-				templateMesh = &Mesh();
+				Mesh newMesh = Mesh();
+				templateMesh = &newMesh;
+
 				indices = vector<GLuint>();
 				vertices = vector<Vertex>();
 			}
@@ -125,6 +128,7 @@ void ObjReader::parse(const char* &path, Model &model)
 	if (templateMesh != nullptr) {
 		templateMesh->setIndices(indices);
 		templateMesh->setVertexes(vertices);
+		templateMesh->init();
 		templateObject->addMesh(*templateMesh);
 	}
 

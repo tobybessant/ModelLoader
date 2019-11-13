@@ -27,6 +27,6 @@ void ShaderProgram::use() {
 	glUseProgram(program);
 }
 
-GLuint* ShaderProgram::id() {
-	return &program;
+GLuint& ShaderProgram::id() {
+	return program;
 }

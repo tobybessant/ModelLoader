@@ -8,7 +8,7 @@ public:
 	ShaderProgram(const char* vertShader, const char* fragShader);
 	void use();
 	void update();
-	GLuint* id();
+	GLuint& id();
 private:
 	GLuint program;
 };

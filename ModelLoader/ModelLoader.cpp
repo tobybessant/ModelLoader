@@ -47,11 +47,8 @@ int main(int argc, char** argv) {
 	// set console colour to grey
 	SetConsoleTextAttribute(hConsole, 8);
 	cout << "Example: models/folder1/model.obj, models/folder2/model2.obj " << endl;
-	
-	const char* path = "models/creeper-obj/creeper2.obj";
 
 	ObjReader oReader = ObjReader();
-
 	while (modelPath != "QQ") {
 		SetConsoleTextAttribute(hConsole, 2);
 		cout << "Path: ";
@@ -66,6 +63,11 @@ int main(int argc, char** argv) {
 			glfw.createWindow(600, 800, "VERSION 2");
 
 			GLEWServices glew = GLEWServices();
+		
+			// set global gl states
+			glFrontFace(GL_CW);
+			glCullFace(GL_BACK);
+			glEnable(GL_CULL_FACE);
 
 			// create shader program
 			ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
@@ -73,11 +75,14 @@ int main(int argc, char** argv) {
 
 			// read model file
 			Model model = Model();
-			oReader.parse(path, model);
-
+			oReader.parse(modelPath, model);
 			while (!glfw.quit()) {
 				program.update();
 				model.render(program.id());
+				//glBindVertexArray(model.objects[0].meshes[0].VAO);
+				//model.objects[0].meshes[0].render(program.id());
+				//glBindVertexArray(model.objects[0].meshes[1].VAO);
+				//model.objects[0].meshes[1].render(program.id());
 				glfw.update();
 			}
 			glfw.destroy();

@@ -7,7 +7,7 @@ public:
 	void setName(char* &_name);
 	
 	void addMesh(Mesh mesh);
-	void render(GLuint* _program);
+	void render(GLuint& _program);
 
 	void init();
 
