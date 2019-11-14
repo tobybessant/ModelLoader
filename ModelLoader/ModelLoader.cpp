@@ -29,45 +29,49 @@ int main(int argc, char** argv) {
 
 	console.printStartup();
 
-	while (modelPath != "QQ") {
+	console.askForModel(modelPath);
+
+	if (oReader.verifyFile(modelPath)) {
+
+		// init GL services
+		GLFWServices glfw = GLFWServices();
+		glfw.createWindow(600, 800, "Model Loader");
+
+		GLEWServices glew = GLEWServices();
 		
+		glfw.addKeyBinding(GLFW_KEY_ESCAPE, [&]() {
+			glfwWindowShouldClose(window, true);
+		});
+
+		// set global gl states
+		//glFrontFace(GL_CCW);
+		//glCullFace(GL_BACK);
+		//glEnable(GL_CULL_FACE);
+		glEnable(GL_DEPTH_TEST);
+
+		// create and use shader program
+		ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
+		program.use();
+
+		loadModel(modelPath, oReader, models);
+/*
 		console.askForModel(modelPath);
+		loadModel(modelPath, oReader, models);*/
 
-		if (oReader.verifyFile(modelPath)) {
-
-			// init GL services
-			GLFWServices glfw = GLFWServices();
-			glfw.createWindow(600, 800, "Model Loader");
-
-			GLEWServices glew = GLEWServices();
-		
-			// set global gl states
-			//glFrontFace(GL_CCW);
-			//glCullFace(GL_BACK);
-			//glEnable(GL_CULL_FACE);
-			glEnable(GL_DEPTH_TEST);
-
-			// create and use shader program
-			ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
-			program.use();
-
-			loadModel(modelPath, oReader, models);
-
-			while (!glfw.quit()) {
-				program.update();
+		while (!glfw.shouldClose()) {
+			program.update();
 				
-				for (int i = 0; i < models.size(); i++) {
-					models[i].render(program.id());
-				}
-
-				glfw.update();
+			for (int i = 0; i < models.size(); i++) {
+				models[i].render(program.id());
 			}
-			glfw.destroy();
+
+			glfw.update();
 		}
-		else {
-			SetConsoleTextAttribute(hConsole, 4);
-			cout << "ERR: At least one invalid/non-existant model file found. Please remove and try again." << endl;
-		}
+		glfw.destroy();
+	}
+	else {
+		SetConsoleTextAttribute(hConsole, 4);
+		cout << "ERR: At least one invalid/non-existant model file found. Please remove and try again." << endl;
 	}
 }
 

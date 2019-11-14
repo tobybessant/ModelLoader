@@ -11,6 +11,8 @@ GLFWServices::GLFWServices()
 void GLFWServices::createWindow(unsigned int height, unsigned int width, const char* windowName) {
 	window = glfwCreateWindow(width, height, windowName, NULL, NULL);
 
+	glfwSetWindowUserPointer(window, this);
+
 	glfwSetKeyCallback(window, keypress);
 	glfwMakeContextCurrent(window);
 }
@@ -21,7 +23,7 @@ void GLFWServices::update()
 	glfwPollEvents();
 }
 
-bool GLFWServices::quit()
+bool GLFWServices::shouldClose()
 {
 	return glfwWindowShouldClose(window);
 }
@@ -32,9 +34,22 @@ void GLFWServices::destroy()
 	glfwTerminate();
 }
 
+void GLFWServices::addKeyBinding(GLuint key, const Callback& callback)
+{
+	keypressCallbacks[key] = callback;
+}
+
+void GLFWServices::triggerKeyPress(GLuint key)
+{
+	if(keypressCallbacks.count(key) > 0) {
+		keypressCallbacks[key]();
+	}
+}
+
 void keypress(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_W) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
+	// forward even onto glfwservices object
+	GLFWServices* glfwServices = reinterpret_cast<GLFWServices*>(glfwGetWindowUserPointer(window));
+	glfwServices->triggerKeyPress(key);
+
 }
