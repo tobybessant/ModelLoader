@@ -92,7 +92,7 @@ void Mesh::setVertexes(std::vector<Vertex> v)
 	vertices = v;
 }
 
-void Mesh::setMaterial(Material mat)
+void Mesh::setMaterial(Material &mat)
 {
 	material = mat;
 }
@@ -144,7 +144,7 @@ void Mesh::createTexture()
 
 	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
 	// material.diffuseTextureMapPath.c_str()
-	unsigned char* data = stbi_load("models/creeper-obj/Texture.png", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load(material.diffuseTextureMapPath.c_str(), &width, &height, &nrChannels, 0);
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);

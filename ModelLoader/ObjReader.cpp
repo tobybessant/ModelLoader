@@ -60,17 +60,16 @@ void ObjReader::parse(string &path, Model &model)
 					templateMesh->setIndices(indices);
 					templateMesh->setVertexes(vertices);
 
-					string materialName = getValue(line);
-					templateMesh->setMaterial(materials[materialName]);
-
 					templateMesh->init();
 					templateObject->addMesh(*templateMesh);
 					currentVertexCount = 0;
 				}
 
 				// wipe 
-				Mesh newMesh = Mesh();
-				templateMesh = &newMesh;
+				templateMesh = new Mesh();
+				string materialName = getValue(line);
+				templateMesh->setMaterial(materials[materialName]);
+
 
 				indices = vector<GLuint>();
 				vertices = vector<Vertex>();
@@ -169,32 +168,26 @@ void ObjReader::loadMtl(std::string& mtlPath, std::map<std::string, Material>& m
 				Material mat = Material();
 				materials[currentMaterial] = mat;
 				materials[currentMaterial].name = currentMaterial;
-			}
-
-			if (strstr(mtlLine, "Ka ")) {
-				materials[currentMaterial].ambient = createVector3(mtlLine);
-			}
-
-			if (strstr(mtlLine, "Kd ") != NULL) {
-				materials[currentMaterial].diffuse = createVector3(mtlLine);
-			}
-
-			if (strstr(mtlLine, "Ks ") != NULL) {
-				materials[currentMaterial].specular = createVector3(mtlLine);
-			}
-
-			if (strstr(mtlLine, "d ") != NULL) {
-				materials[currentMaterial].dissolve = stof(getValue(mtlLine));
-			}
-
-			if (strstr(mtlLine, "map_d ") != NULL) {
-				// get alpha path
-				materials[currentMaterial].alphaTextureMapPath = getDirectory(mtlPath) + getFileName(mtlLine);
-			}
-
-			if (strstr(mtlLine, "map_Kd ") != NULL) {
+			} 
+			else if (strstr(mtlLine, "map_Kd ") != NULL) {
 				// get diffuse path
 				materials[currentMaterial].diffuseTextureMapPath = getDirectory(mtlPath) + getFileName(mtlLine);
+			} 
+			else if (strstr(mtlLine, "map_d ") != NULL) {
+				// get alpha path
+				materials[currentMaterial].alphaTextureMapPath = getDirectory(mtlPath) + getFileName(mtlLine);
+			} 
+			else if (strstr(mtlLine, "Ka ")) {
+				materials[currentMaterial].ambient = createVector3(mtlLine);
+			}
+			else if (strstr(mtlLine, "Kd ") != NULL) {
+				materials[currentMaterial].diffuse = createVector3(mtlLine);
+			}
+			else if (strstr(mtlLine, "Ks ") != NULL) {
+				materials[currentMaterial].specular = createVector3(mtlLine);
+			}
+			else if (strstr(mtlLine, "d ") != NULL) {
+				materials[currentMaterial].dissolve = stof(getValue(mtlLine));
 			}
 		}
 	}

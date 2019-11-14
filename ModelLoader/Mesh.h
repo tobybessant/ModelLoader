@@ -15,7 +15,7 @@ public:
 	void setup(MeshConfig& config);
 	void setIndices(std::vector<GLuint> i);
 	void setVertexes(std::vector<Vertex> v);
-	void setMaterial(Material mat);
+	void setMaterial(Material& mat);
 
 	void init();
 	void render(GLuint& _program);
