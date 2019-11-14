@@ -59,8 +59,10 @@ void ObjReader::parse(string &path, Model &model)
 				if (templateMesh != nullptr) {
 					templateMesh->setIndices(indices);
 					templateMesh->setVertexes(vertices);
-					//TODO extract material name
-					//templateMesh->setMaterial(materials[0]);
+
+					string materialName = getValue(line);
+					templateMesh->setMaterial(materials[materialName]);
+
 					templateMesh->init();
 					templateObject->addMesh(*templateMesh);
 					currentVertexCount = 0;
@@ -148,10 +150,12 @@ void ObjReader::loadMtl(std::string& mtlPath, std::map<std::string, Material>& m
 	char mtlLine[255];
 
 	Material* tempMaterial = nullptr;
+	string currentMaterial = "";
 
 	char* pos;
 	if ((pos = strchr((char*)mtlPath.c_str(), '\n')) != NULL)
 		* pos = '\0';
+
 
 	mtlErr = fopen_s(&mtlFp, mtlPath.c_str(), "r");
 	if (mtlErr == 0) {
@@ -161,47 +165,38 @@ void ObjReader::loadMtl(std::string& mtlPath, std::map<std::string, Material>& m
 				* pos = '\0';
 
 			if (strstr(mtlLine, "newmtl ")) {
-				// TODO: check the value the line pointer points to is not being modified / make sure to duplicate value.
-				if (tempMaterial != nullptr) {
-					string key = tempMaterial->name;
-					materials[key] = *tempMaterial;
-				}
-
+				currentMaterial = getValue(mtlLine);
 				Material mat = Material();
-				mat.name = getValue(mtlLine);
-				tempMaterial = &mat;
+				materials[currentMaterial] = mat;
+				materials[currentMaterial].name = currentMaterial;
 			}
 
 			if (strstr(mtlLine, "Ka ")) {
-				tempMaterial->ambient = createVector3(mtlLine);
+				materials[currentMaterial].ambient = createVector3(mtlLine);
 			}
 
 			if (strstr(mtlLine, "Kd ") != NULL) {
-				tempMaterial->diffuse = createVector3(mtlLine);
+				materials[currentMaterial].diffuse = createVector3(mtlLine);
 			}
 
 			if (strstr(mtlLine, "Ks ") != NULL) {
-				tempMaterial->specular = createVector3(mtlLine);
+				materials[currentMaterial].specular = createVector3(mtlLine);
 			}
 
 			if (strstr(mtlLine, "d ") != NULL) {
-				tempMaterial->dissolve = stof(getValue(mtlLine));
+				materials[currentMaterial].dissolve = stof(getValue(mtlLine));
 			}
 
 			if (strstr(mtlLine, "map_d ") != NULL) {
 				// get alpha path
-				tempMaterial->alphaTextureMapPath = getDirectory(mtlPath) + getFileName(mtlLine);
+				materials[currentMaterial].alphaTextureMapPath = getDirectory(mtlPath) + getFileName(mtlLine);
 			}
 
 			if (strstr(mtlLine, "map_Kd ") != NULL) {
 				// get diffuse path
-				tempMaterial->diffuseTextureMapPath = getDirectory(mtlPath) + getFileName(mtlLine);
+				materials[currentMaterial].diffuseTextureMapPath = getDirectory(mtlPath) + getFileName(mtlLine);
 			}
 		}
-	}
-
-	if (tempMaterial != nullptr) {
-		materials[tempMaterial->name] = *tempMaterial;
 	}
 }
 
@@ -247,18 +242,22 @@ glm::vec2 ObjReader::createVector2(char* line) {
 
 }
 
-char* ObjReader::getValue(char* line)
+std::string ObjReader::getValue(char* line)
 {
-	int length = strlen(line);
-	char dupLine[length];
-	strcpy();
+	char* pos;
+	if ((pos = strchr(line, '\n')) != NULL)
+		* pos = '\0';
+
+	string lineString = (string)line;
+	string duplicate = lineString;
+
 	char* token;
 	char* nextToken = nullptr;
 
 	char* values[1]{ 0 };
 	int counter = 0;
 
-	token = strtok_s(dupLine, " ", &nextToken);
+	token = strtok_s((char*)duplicate.c_str(), " ", &nextToken);
 	while (token != NULL) {
 		if (counter > 0) {
 			values[counter - 1] = token;
@@ -268,7 +267,7 @@ char* ObjReader::getValue(char* line)
 		token = strtok_s(NULL, " ", &nextToken);
 	}
 
-	return values[0];
+	return (string)values[0];
 }
 
 std::string ObjReader::getDirectory(std::string& originalPath) {
