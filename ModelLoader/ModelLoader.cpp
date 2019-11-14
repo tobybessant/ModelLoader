@@ -12,43 +12,22 @@
 #include "MeshConfig.h"
 
 #include "ObjReader.h"
+#include "ConsoleServices.h"
 
 using namespace std;
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 int main(int argc, char** argv) {
+	// init service utilities for console and OBJ reader
+	ConsoleServices console = ConsoleServices(hConsole);
+	ObjReader oReader = ObjReader();
+
 	string modelPath;
 
-	// set console colour to cyan
-	SetConsoleTextAttribute(hConsole, 11);
+	// print startup text
+	console.printStartup();
 
-	// "Creeper-obj/Creeper.obj"
-	cout << " _____ ______   ________  ________  _______   ___				" << endl;
-	cout << "|\\   _ \\  _   \\|\\   __  \\|\\   ___ \\|\\  ___ \\ |\\  \\				" << endl;
-	cout << "\\ \\  \\\\\\__\\ \\  \\ \\  \\|\\  \\ \\  \\_|\\ \\ \\   __/|\\ \\  \\				" << endl;
-	cout << " \\ \\  \\\\|__| \\  \\ \\  \\\\\\  \\ \\  \\ \\\\ \\ \\  \\_|/_\\ \\  \\			" << endl;
-	cout << "  \\ \\  \\    \\ \\  \\ \\  \\\\\\  \\ \\  \\_\\\\ \\ \\  \\_|\\ \\ \\  \\____		" << endl;
-	cout << "   \\ \\__\\    \\ \\__\\ \\_______\\ \\_______\\ \\_______\\ \\_______\\		" << endl;
-	cout << "    \\|__|     \\|__|\\|_______|\\|_______|\\|_______|\\|_______|		" << endl;
-	cout << " ___       ________  ________  ________  _______   ________		" << endl;
-	cout << "|\\  \\     |\\   __  \\|\\   __  \\|\\   ___ \\|\\  ___ \\ |\\   __  \\	" << endl;
-	cout << "\\ \\  \\    \\ \\  \\|\\  \\ \\  \\|\\  \\ \\  \\_|\\ \\ \\   __/|\\ \\  \\|\\  \\	" << endl;
-	cout << " \\ \\  \\    \\ \\  \\\\\\  \\ \\   __  \\ \\  \\ \\\\ \\ \\  \\_|/_\\ \\   _  _\\	" << endl;
-	cout << "  \\ \\  \\____\\ \\  \\\\\\  \\ \\  \\ \\  \\ \\  \\_\\\\ \\ \\  \\_|\\ \\ \\  \\\\  \\|	" << endl;
-	cout << "   \\ \\_______\\ \\_______\\ \\__\\ \\__\\ \\_______\\ \\_______\\ \\__\\\\ _\\	" << endl;
-	cout << "    \\|_______|\\|_______|\\|__|\\|__|\\|_______|\\|_______|\\|__|\\|__|" << endl;
-	cout << endl;
-	cout << endl;
-	cout << "To quit the program, please enter 'QQ'." << endl;
-	//cout << "Please enter a comma-separated list of paths to the model file you would like to load:" << endl;
-	cout << "Please enter the path to a model file you would like to load:" << endl;
-
-	// set console colour to grey
-	SetConsoleTextAttribute(hConsole, 8);
-	cout << "Example: models/folder1/model.obj, models/folder2/model2.obj " << endl;
-
-	ObjReader oReader = ObjReader();
 	while (modelPath != "QQ") {
 		SetConsoleTextAttribute(hConsole, 2);
 		cout << "Path: ";

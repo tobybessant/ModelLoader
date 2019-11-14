@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConsoleServices.cpp" />
     <ClCompile Include="GLEWServices.cpp" />
     <ClCompile Include="GLFWServices.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -141,6 +142,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConsoleServices.h" />
     <ClInclude Include="GLEWServices.h" />
     <ClInclude Include="GLFWServices.h" />
     <ClInclude Include="InputManager.h" />
