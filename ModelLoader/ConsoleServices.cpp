@@ -14,6 +14,16 @@ void ConsoleServices::setTextColour(std::string colour)
 	if (colour == "grey") {
 		SetConsoleTextAttribute(h, 8);
 	}
+	if (colour == "green") {
+		SetConsoleTextAttribute(h, 2);
+	}
+}
+
+void ConsoleServices::askForModel(std::string& modelPath)
+{
+	setTextColour("green");
+	std::cout << "Path: ";
+	std::cin >> modelPath;
 }
 
 void ConsoleServices::printStartup()

@@ -13,6 +13,7 @@
 class ObjReader
 {
 public:
+	bool verifyFile(std::string& path);
 	void parse(std::string &path, Model &model);
 
 private:

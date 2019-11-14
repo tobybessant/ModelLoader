@@ -25,21 +25,17 @@ int main(int argc, char** argv) {
 
 	string modelPath;
 
-	// print startup text
 	console.printStartup();
 
 	while (modelPath != "QQ") {
-		SetConsoleTextAttribute(hConsole, 2);
-		cout << "Path: ";
-		cin >> modelPath;
+		
+		console.askForModel(modelPath);
 
-		//check model file
-		//reader.verifyFile(modelPath)
-		if (true) {
+		if (oReader.verifyFile(modelPath)) {
 
-			// init services
+			// init GL services
 			GLFWServices glfw = GLFWServices();
-			glfw.createWindow(600, 800, "VERSION 2");
+			glfw.createWindow(600, 800, "Model Loader");
 
 			GLEWServices glew = GLEWServices();
 		
@@ -49,7 +45,7 @@ int main(int argc, char** argv) {
 			//glEnable(GL_CULL_FACE);
 			glEnable(GL_DEPTH_TEST);
 
-			// create shader program
+			// create and use shader program
 			ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
 			program.use();
 

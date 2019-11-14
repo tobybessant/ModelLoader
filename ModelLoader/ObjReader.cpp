@@ -3,6 +3,18 @@
 
 using namespace std;
 
+bool ObjReader::verifyFile(std::string& path)
+{
+	FILE* fp;
+	errno_t err;
+
+	err = fopen_s(&fp, path.c_str(), "r");
+	if (err == 0) {
+		return true;
+	}
+	return false;
+}
+
 void ObjReader::parse(string &path, Model &model)
 {
 	FILE* fp;
