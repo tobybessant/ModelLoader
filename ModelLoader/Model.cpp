@@ -30,6 +30,13 @@ void Model::render(GLuint& _program)
 	}
 }
 
+void Model::destroy()
+{
+	for (Object o : objects) {
+		o.destroy();
+	}
+}
+
 void Model::translate(glm::vec3 translation)
 {
 	model = glm::translate(model, translation);

@@ -1,30 +1,26 @@
 #include "ConsoleServices.h"
 
-ConsoleServices::ConsoleServices(HANDLE& _h)
+ConsoleServices::ConsoleServices(HANDLE& _h, std::string* _modelPath)
 {
 	h = _h;
+	askedForModel = false;
+	modelPath = _modelPath;
 }
 
-void ConsoleServices::setTextColour(std::string colour)
+void ConsoleServices::setTextColour(TEXT_COLOURS colour)
 {
 	// set console colour to cyan
-	if (colour == "cyan") {
-		SetConsoleTextAttribute(h, 11);
-	}
-	if (colour == "grey") {
-		SetConsoleTextAttribute(h, 8);
-	}
-	if (colour == "green") {
-		SetConsoleTextAttribute(h, 2);
-	}
+	SetConsoleTextAttribute(h, colour);
 }
 
-void ConsoleServices::askForModel(std::string& modelPath)
+void ConsoleServices::askForModel()
 {
 	askedForModel = true;
-	setTextColour("green");
+
+	setTextColour(GREEN);
 	std::cout << "Path: ";
-	std::cin >> modelPath;
+	std::cin >> *modelPath;
+
 	askedForModel = false;
 }
 
@@ -35,7 +31,7 @@ bool ConsoleServices::askingForModel()
 
 void ConsoleServices::printStartup()
 {
-	setTextColour("cyan");
+	setTextColour(CYAN);
 
 	std::cout << " _____ ______   ________  ________  _______   ___				" << std::endl;
 	std::cout << "|\\   _ \\  _   \\|\\   __  \\|\\   ___ \\|\\  ___ \\ |\\  \\				" << std::endl;
@@ -60,6 +56,22 @@ void ConsoleServices::printStartup()
 	std::cout << "Please enter the path to a model file you would like to load:" << std::endl;
 
 	// set console colour to grey
-	setTextColour("grey");
+	setTextColour(GREY);
 	std::cout << "Example: models/folder1/model.obj, models/folder2/model2.obj " << std::endl;
+}
+
+void ConsoleServices::error(ERRORS errorType)
+{
+	setTextColour(RED);
+
+	switch (errorType) {
+	case InvalidFile:
+		std::cout << "ERR: Invalid or non existant file path entered. Please try again.";
+		break;
+	case ReadError:
+		std::cout << "ERR: Error reading file. File may be malformed or corrupt. Please use valid files only.";
+		break;
+	}
+
+	std::cout << std::endl;
 }

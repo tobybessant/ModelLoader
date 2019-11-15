@@ -23,3 +23,10 @@ void Object::init()
 		m.init();
 	}
 }
+
+void Object::destroy()
+{
+	for (Mesh m : meshes) {
+		m.destroy();
+	}
+}

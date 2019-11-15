@@ -16,66 +16,82 @@
 
 using namespace std;
 
+void removeModel(std::vector<Model>* modelStore);
 void loadModel(std::string& modelPath, ObjReader& reader, std::vector<Model>& modelStore);
+void addModel(ConsoleServices& console, std::string& modelPath, ObjReader& reader, std::vector<Model>& modelStore);
+
+extern GLuint currentlyActiveModel = 0;
 
 int main(int argc, char** argv) {
-	// init service utilities for console and OBJ reader
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);	
-	ConsoleServices console = ConsoleServices(hConsole);
-	ObjReader oReader = ObjReader();
+	bool exitProgram = false;
 
 	vector<Model> models;
-	GLuint currentlyActiveModel = 0;
 
 	string modelPath;
 
+	// init service utilities for console and OBJ reader
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);	
+	ConsoleServices console = ConsoleServices(hConsole, &modelPath);
+	ObjReader oReader = ObjReader();
+
 	console.printStartup();
 
-	while (true) {
-		console.askForModel(modelPath);
+	// init GL services (models array req. in glfw for keypresses)
+	GLFWServices glfw = GLFWServices(&models, &currentlyActiveModel, &console);
+	
 
-		if (oReader.verifyFile(modelPath)) {
+	glfw.addKeyBinding(GLFW_KEY_KP_ADD, [&]() {
+		addModel(console, modelPath, oReader, models);
+	});
 
-			// init GL services (models array req. in glfw for keypresses)
-			GLFWServices glfw = GLFWServices(&models, &currentlyActiveModel, &console);
-			glfw.createWindow(768, 1280, "Model Loader");
+	glfw.addKeyBinding(GLFW_KEY_KP_SUBTRACT, [&]() {
+		removeModel(&models);
+	});
 
-			GLEWServices glew = GLEWServices();
+	glfw.addKeyBinding(GLFW_KEY_F1, [&]() {
+		currentlyActiveModel = 0;
+	});
 
-			// set global gl states
-			//glFrontFace(GL_CCW);
-			//glCullFace(GL_BACK);
-			//glEnable(GL_CULL_FACE);
-			glEnable(GL_DEPTH_TEST);
+	glfw.addKeyBinding(GLFW_KEY_F2, [&]() {
+		currentlyActiveModel = 1;
+	});
 
-			// create and use shader program
-			ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
-			program.use();
+	glfw.addKeyBinding(GLFW_KEY_F3, [&]() {
+		currentlyActiveModel = 2;
+	});
 
-			loadModel(modelPath, oReader, models);
+	glfw.addKeyBinding(GLFW_KEY_F4, [&]() {
+		currentlyActiveModel = 3;
+	});
 
-			/*
-			console.askForModel(modelPath);
-			loadModel(modelPath, oReader, models);
-			*/
+	glfw.addKeyBinding(GLFW_KEY_F5, [&]() {
+		currentlyActiveModel = 4;
+	});
 
-			while (!glfw.shouldClose() && !console.askingForModel()) {
+	glfw.createWindow(600, 800, "Model Loader");
+	GLEWServices glew = GLEWServices();
 
-				program.update();
+	// create and use shader program
+	ShaderProgram program = ShaderProgram("media/triangles.vert", "media/triangles.frag");
+	program.use();
 
-				for (int i = 0; i < models.size(); i++) {
-					models[i].render(program.id());
-				}
+	// set global gl states
+	glEnable(GL_DEPTH_TEST);
 
-				glfw.update();
-			}
-			glfw.destroy();
+	addModel(console, modelPath, oReader, models);
+
+	while (!glfw.shouldClose()) {
+
+		program.update();
+
+		for (int i = 0; i < models.size(); i++) {
+			models[i].render(program.id());
 		}
-		else {
-			SetConsoleTextAttribute(hConsole, 4);
-			cout << "ERR: At least one invalid/non-existant model file found. Please remove and try again." << endl;
-		}
+
+		glfw.update();
 	}
+
+	glfw.destroy();
 }
 
 void loadModel(std::string& modelPath, ObjReader& reader, std::vector<Model>& modelStore) {
@@ -83,4 +99,22 @@ void loadModel(std::string& modelPath, ObjReader& reader, std::vector<Model>& mo
 	Model model = Model();
 	reader.parse(modelPath, model);
 	modelStore.push_back(model);
+}
+
+void addModel(ConsoleServices& console, std::string& modelPath, ObjReader& reader, std::vector<Model>& modelStore)
+{
+	console.askForModel();
+	if (reader.verifyFile(modelPath)) {
+		loadModel(modelPath, reader, modelStore);
+	} 
+	else 
+	{
+		console.error(console.InvalidFile);
+		addModel(console, modelPath, reader, modelStore);
+	}
+}
+
+void removeModel(std::vector<Model>* modelStore) {
+	modelStore->at(modelStore->size() - 1).destroy();
+	modelStore->pop_back();
 }

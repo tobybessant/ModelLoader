@@ -10,6 +10,7 @@ public:
 	void render(GLuint& _program);
 
 	void init();
+	void destroy();
 
 private:
 	char* name;

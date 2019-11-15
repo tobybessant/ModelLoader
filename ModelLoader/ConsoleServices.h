@@ -5,17 +5,23 @@
 class ConsoleServices
 {
 public:
-	ConsoleServices(HANDLE& h);
+	enum ERRORS { InvalidFile, ReadError };
+	enum TEXT_COLOURS { GREEN = 2, RED = 4, GREY = 8, CYAN = 11 };
 
-	void setTextColour(std::string colour);
-	void askForModel(std::string& modelPath);
+	ConsoleServices(HANDLE& h, std::string* modelPath);
 
+	void setTextColour(TEXT_COLOURS colour);
+	
+	void askForModel();
 	bool askingForModel();
 
 	void printStartup();
 
+	void error(ERRORS errorType);
+
 private:
 	HANDLE h;
+	std::string* modelPath;
 	bool askedForModel;
 };
 

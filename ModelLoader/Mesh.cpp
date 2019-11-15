@@ -49,16 +49,11 @@ void Mesh::render(GLuint &_program)
 	
 }
 
-void Mesh::translate(glm::vec3 translation)
+void Mesh::destroy()
 {
-}
-
-void Mesh::rotate(GLfloat amount, glm::vec3 axis)
-{
-}
-
-void Mesh::scaleModel(glm::vec3 scale)
-{
+	glDeleteBuffers(1, &Buffers[Vertices]);
+	glDeleteBuffers(1, &Buffers[Indices]);
+	glDeleteVertexArrays(1, &VAO);
 }
 
 void Mesh::setIndices(std::vector<GLuint> i)

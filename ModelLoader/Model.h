@@ -12,6 +12,7 @@ public:
 
 	void addObject(Object object);
 	void render(GLuint& _program);
+	void destroy();
 
 	void translate(glm::vec3 translation);
 	void rotate(GLfloat amount, glm::vec3 axis);

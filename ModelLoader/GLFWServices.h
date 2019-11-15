@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Model.h"
+#include "ObjReader.h"
 #include "GLFW/glfw3.h"
 #include <map>
 #include <vector>
@@ -23,9 +24,10 @@ public:
 	void triggerKeyPress(GLuint key, GLuint action);
 private:
 	GLFWwindow* window;
+	std::string* modelPath;
 	std::vector<Model>* models;
 	GLuint* currentlyActiveModel;
-	
+
 	ConsoleServices* console;
 
 	std::map<int, Callback> keypressCallbacks;
