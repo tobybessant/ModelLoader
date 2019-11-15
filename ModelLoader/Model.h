@@ -21,6 +21,6 @@ private:
 
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 view = glm::mat4(1.0f);
-	glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3, 0.1f, 200.0f);
+	glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3, 0.1f, 900.0f);
 };
 

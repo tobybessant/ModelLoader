@@ -21,9 +21,16 @@ void ConsoleServices::setTextColour(std::string colour)
 
 void ConsoleServices::askForModel(std::string& modelPath)
 {
+	askedForModel = true;
 	setTextColour("green");
 	std::cout << "Path: ";
 	std::cin >> modelPath;
+	askedForModel = false;
+}
+
+bool ConsoleServices::askingForModel()
+{
+	return askedForModel;
 }
 
 void ConsoleServices::printStartup()

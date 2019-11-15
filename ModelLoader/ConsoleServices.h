@@ -10,9 +10,12 @@ public:
 	void setTextColour(std::string colour);
 	void askForModel(std::string& modelPath);
 
+	bool askingForModel();
+
 	void printStartup();
 
 private:
 	HANDLE h;
+	bool askedForModel;
 };
 
