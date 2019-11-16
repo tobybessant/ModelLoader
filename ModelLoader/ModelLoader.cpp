@@ -81,8 +81,9 @@ int main(int argc, char** argv) {
 
 	// set global gl states
 	glEnable(GL_DEPTH_TEST);
-
+	
 	addModel(console, modelPath, oReader, models);
+
 
 	while (!glfw.shouldClose()) {
 
@@ -110,9 +111,14 @@ void addModel(ConsoleServices& console, std::string& modelPath, ObjReader& reade
 {
 	console.askForModel();
 	if (reader.verifyFile(modelPath)) {
-		loadModel(modelPath, reader, modelStore);
-	} 
-	else 
+		try {
+			loadModel(modelPath, reader, modelStore);
+		}
+		catch(...) {
+			cout << "error!" << endl;
+		}
+	}
+	else
 	{
 		console.error(console.InvalidFile);
 		addModel(console, modelPath, reader, modelStore);

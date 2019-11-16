@@ -30,6 +30,7 @@ void ObjReader::parse(string &path, Model &model)
 	vector<GLuint> indices;
 	vector<Vertex> vertices;
 	GLuint currentVertexCount = 0;
+	GLuint linesRead = 0;
 
 	Object* templateObject = nullptr;
 	Mesh* templateMesh = nullptr;
@@ -40,6 +41,7 @@ void ObjReader::parse(string &path, Model &model)
 	if (err == 0) {
 		while (fgets(line, sizeof(line), fp) != NULL)
 		{
+			linesRead++;
 			if (strstr(line, "mtllib ") != NULL) {
 				string mtlPath = getDirectory(path) + getFileName(line);
 				cout << mtlPath;
@@ -208,6 +210,7 @@ void ObjReader::loadMtl(std::string& mtlPath, std::map<std::string, Material>& m
 }
 
 glm::vec3 ObjReader::createVector3(char* line) {
+
 	char* token;
 	char* nextToken = nullptr;
 

@@ -5,7 +5,6 @@ Model::Model()
 {
 	// creating the model matrix
 	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 
 	// creating the view matrix
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -2.0f));

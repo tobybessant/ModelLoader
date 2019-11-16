@@ -23,10 +23,6 @@ Mesh::Mesh()
 {
 }
 
-Mesh::~Mesh()
-{
-}
-
 void Mesh::setup(MeshConfig& _config)
 {
 	vertices = _config.vertices;
@@ -55,6 +51,7 @@ void Mesh::render(GLuint &_program)
 
 void Mesh::destroy()
 {
+	glBindVertexArray(VAO);
 	glDeleteBuffers(1, &Buffers[Vertices]);
 	glDeleteBuffers(1, &Buffers[Indices]);
 	glDeleteVertexArrays(1, &VAO);
