@@ -75,6 +75,11 @@ void Mesh::setMaterial(Material &mat)
 	material = mat;
 }
 
+glm::vec3 Mesh::getMaterialColour()
+{
+	return material.diffuse;
+}
+
 void Mesh::initBuffers()
 {
 	// create and bind VAO buffers
@@ -101,6 +106,9 @@ void Mesh::initBuffers()
 
 	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, texture)));
 	glEnableVertexAttribArray(tPosition);
+
+	glVertexAttribPointer(cPosition, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, colour)));
+	glEnableVertexAttribArray(cPosition);
 	
 	//glBindVertexArray(0);
 }
@@ -118,19 +126,20 @@ void Mesh::createTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// load image, create texture and generate mipmaps
-	GLint width, height, nrChannels;
-
-	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-	// material.diffuseTextureMapPath.c_str()
-	unsigned char* data = stbi_load(material.diffuseTextureMapPath.c_str(), &width, &height, &nrChannels, 0);
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
+	
+	if (!material.diffuseTextureMapPath.empty()) {
+		GLint width, height, nrChannels;
+		stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+		unsigned char* data = stbi_load(material.diffuseTextureMapPath.c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		stbi_image_free(data);
 	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
+	else {
+		GLubyte texData[] = { 255, 255, 255, 255 };
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
 	}
-	stbi_image_free(data);
 }

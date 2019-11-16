@@ -112,7 +112,9 @@ void ObjReader::parse(string &path, Model &model)
 						GLuint vi = std::stoi(index);
 						vn = normalStore.at(vi - 1);
 
-						Vertex newV = Vertex(v, vn, vt);
+						glm::vec4 vcol = glm::vec4(templateMesh->getMaterialColour(), 1.0f);
+
+						Vertex newV = Vertex(v, vn, vt, vcol);
 						vertices.push_back(newV);
 					}
 
