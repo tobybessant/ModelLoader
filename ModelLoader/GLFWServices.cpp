@@ -63,38 +63,51 @@ void GLFWServices::registerKeyCallbacks()
 
 	// model rotation
 	addKeyBinding(GLFW_KEY_DOWN, [&]() {
-		models->at(*currentlyActiveModel).rotate(-0.2f, glm::vec3(1.0f, 0.0f, 0.0f));
+		if(atLeastOneModel())
+			models->at(*currentlyActiveModel).rotate(-0.2f, glm::vec3(1.0f, 0.0f, 0.0f));
 	});
 
 	addKeyBinding(GLFW_KEY_UP, [&]() {
-		models->at(*currentlyActiveModel).rotate(0.2f, glm::vec3(1.0f, 0.0f, 0.0f));
+		if (atLeastOneModel())
+			models->at(*currentlyActiveModel).rotate(0.2f, glm::vec3(1.0f, 0.0f, 0.0f));
 	});
 
 	addKeyBinding(GLFW_KEY_RIGHT, [&]() {
-		models->at(*currentlyActiveModel).rotate(0.2f, glm::vec3(0.0f, 1.0f, 0.0f));
+		if (atLeastOneModel())
+			models->at(*currentlyActiveModel).rotate(0.2f, glm::vec3(0.0f, 1.0f, 0.0f));
 	});
 
 	addKeyBinding(GLFW_KEY_LEFT, [&]() {
-		models->at(*currentlyActiveModel).rotate(-0.2f, glm::vec3(0.0f, 1.0f, 0.0f));
+		if (atLeastOneModel())
+			models->at(*currentlyActiveModel).rotate(-0.2f, glm::vec3(0.0f, 1.0f, 0.0f));
 	});
 
 	// model translation
 	addKeyBinding(GLFW_KEY_KP_8, [&]() {
-		models->at(*currentlyActiveModel).translate(glm::vec3(0.0f, 0.0f, -1.0f));
+		if (atLeastOneModel())
+			models->at(*currentlyActiveModel).translate(glm::vec3(0.0f, 0.0f, -1.0f));
 	});
 
 	addKeyBinding(GLFW_KEY_KP_2, [&]() {
-		models->at(*currentlyActiveModel).translate(glm::vec3(0.0f, 0.0f, 1.0f));
+		if (atLeastOneModel())
+			models->at(*currentlyActiveModel).translate(glm::vec3(0.0f, 0.0f, 1.0f));
 	});
 	
 	addKeyBinding(GLFW_KEY_KP_4, [&]() {
-		models->at(*currentlyActiveModel).translate(glm::vec3(1.0f, 0.0f, 0.0f));
+		if (atLeastOneModel())
+			models->at(*currentlyActiveModel).translate(glm::vec3(1.0f, 0.0f, 0.0f));
 	});
 	
 	addKeyBinding(GLFW_KEY_KP_6, [&]() {
-		models->at(*currentlyActiveModel).translate(glm::vec3(-1.0f, 0.0f, 0.0f));
+		if (atLeastOneModel())
+			models->at(*currentlyActiveModel).translate(glm::vec3(-1.0f, 0.0f, 0.0f));
 	});
 
+}
+
+bool GLFWServices::atLeastOneModel()
+{
+	return models->size() > 0;
 }
 
 void keypress(GLFWwindow* window, int key, int scancode, int action, int mods)

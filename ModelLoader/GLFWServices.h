@@ -33,5 +33,6 @@ private:
 	std::map<int, Callback> keypressCallbacks;
 
 	void registerKeyCallbacks();
+	bool atLeastOneModel();
 };
 

@@ -23,6 +23,10 @@ Mesh::Mesh()
 {
 }
 
+Mesh::~Mesh()
+{
+}
+
 void Mesh::setup(MeshConfig& _config)
 {
 	vertices = _config.vertices;

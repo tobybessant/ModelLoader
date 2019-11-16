@@ -12,6 +12,8 @@ class Mesh
 {
 public:
 	Mesh();
+	~Mesh();
+
 	void setup(MeshConfig& config);
 	void setIndices(std::vector<GLuint> i);
 	void setVertexes(std::vector<Vertex> v);

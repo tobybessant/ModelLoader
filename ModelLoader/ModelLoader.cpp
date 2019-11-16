@@ -49,23 +49,27 @@ int main(int argc, char** argv) {
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_F1, [&]() {
-		currentlyActiveModel = 0;
+			currentlyActiveModel = 0;
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_F2, [&]() {
-		currentlyActiveModel = 1;
+		if (models.size() == 2)
+			currentlyActiveModel = 1;
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_F3, [&]() {
-		currentlyActiveModel = 2;
+		if (models.size() == 3)
+			currentlyActiveModel = 2;
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_F4, [&]() {
-		currentlyActiveModel = 3;
+		if (models.size() == 4)
+			currentlyActiveModel = 3;
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_F5, [&]() {
-		currentlyActiveModel = 4;
+		if (models.size() == 5)
+			currentlyActiveModel = 4;
 	});
 
 	glfw.createWindow(600, 800, "Model Loader");
@@ -99,6 +103,7 @@ void loadModel(std::string& modelPath, ObjReader& reader, std::vector<Model>& mo
 	Model model = Model();
 	reader.parse(modelPath, model);
 	modelStore.push_back(model);
+	currentlyActiveModel = modelStore.size() - 1;
 }
 
 void addModel(ConsoleServices& console, std::string& modelPath, ObjReader& reader, std::vector<Model>& modelStore)
@@ -115,6 +120,9 @@ void addModel(ConsoleServices& console, std::string& modelPath, ObjReader& reade
 }
 
 void removeModel(std::vector<Model>* modelStore) {
-	modelStore->at(modelStore->size() - 1).destroy();
-	modelStore->pop_back();
+	if (modelStore->size() > 0) {
+		modelStore->at(modelStore->size() - 1).destroy();
+		modelStore->pop_back();
+		currentlyActiveModel = modelStore->size() - 1;
+	}
 }
