@@ -30,8 +30,8 @@ int main(int argc, char** argv) {
 
 	//string modelPath;
 	//
-	string modelPath = "models/lowpolyboat-dae/low_poly_boat.dae";
-	//string modelPath = "models/creeper-dae/creeper.dae";
+	//string modelPath = "models/lowpolyboat-dae/low_poly_boat.dae";
+	string modelPath = "models/creeper-dae/creeper.dae";
 
 	DaeReader dReader = DaeReader();
 	dReader.parse(modelPath);

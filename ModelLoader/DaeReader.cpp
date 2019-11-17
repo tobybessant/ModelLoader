@@ -78,22 +78,39 @@ void DaeReader::parse(const std::string& path)
 	}
 
 	// LOAD INPUT DATA
-	/* 
+	fileStringCpy = fileString;
+	std::map<std::string, GLuint> triInputs;
+	std::map<std::string, std::string> vertInputs;
+
+	std::regex triVertex("<triangles.*>[\\s\\S]*?<input.*VERTEX.*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
+	std::regex triNormal("<triangles.*>[\\s\\S]*?<input.*NORMAL.*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
+	std::regex triTexcoord("<triangles.*>[\\s\\S]*?<input.*TEXCOORD.*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
+
+	std::vector<std::regex> triInputExpressions = {
+		triNormal,
+		triTexcoord,
+		triVertex
+	};
+	
 	std::cout << "> Preparing vertices. . ." << std::endl;
-	while (std::regex_search(fileStringCpy, matches, indicesExpression)) {
-		std::string values = matches[1];
+	// get triangle inputs
+	for (int i = 0; i < triInputExpressions.size(); i++) {
 
-		char* token;
-		char* nextToken = nullptr;
-
-		token = strtok_s((char*)values.c_str(), " ", &nextToken);
-		while (token != NULL) {
-			indices.push_back(std::stoi(token));
-			token = strtok_s(NULL, " ", &nextToken);
+		while (std::regex_search(fileStringCpy, matches, triInputExpressions[i])) {
+			triInputs[matches[1]] = std::stoi(matches[2]);
+			
+			// add match data to map
+			fileStringCpy = matches.suffix();
 		}
+		fileStringCpy = fileString;
+	}
+
+	// get vertices inputs
+	std::regex vertPositions("<vertices.*>[\\s\\S]*?<input.*POSITION.*source=\"(.*?)\".*\/>[\\s\\S]*?<\/vertices>");
+	while (std::regex_search(fileStringCpy, matches, vertPositions)) {
+		vertInputs[matches[1]];
 
 		// add match data to map
 		fileStringCpy = matches.suffix();
 	}
-	*/
 }
