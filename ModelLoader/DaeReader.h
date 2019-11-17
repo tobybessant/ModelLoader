@@ -9,7 +9,7 @@ class DaeReader
 {
 public:
 	bool verifyFile(std::string& path);
-	void parse(std::string& path, Model& model);
+	void parse(const std::string& path);
 private:
 
 };

@@ -12,6 +12,7 @@
 #include "MeshConfig.h"
 
 #include "ObjReader.h"
+#include "DaeReader.h"
 #include "ConsoleServices.h"
 
 using namespace std;
@@ -27,8 +28,15 @@ int main(int argc, char** argv) {
 
 	vector<Model> models;
 
-	string modelPath;
+	//string modelPath;
+	//
+	string modelPath = "models/lowpolyboat-dae/low_poly_boat.dae";
+	//string modelPath = "models/creeper-dae/creeper.dae";
 
+	DaeReader dReader = DaeReader();
+	dReader.parse(modelPath);
+
+	/*
 	// init service utilities for console and OBJ reader
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);	
 	ConsoleServices console = ConsoleServices(hConsole, &modelPath);
@@ -97,6 +105,7 @@ int main(int argc, char** argv) {
 	}
 
 	glfw.destroy();
+	*/
 }
 
 void loadModel(std::string& modelPath, ObjReader& reader, std::vector<Model>& modelStore) {
