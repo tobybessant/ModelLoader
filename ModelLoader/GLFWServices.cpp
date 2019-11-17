@@ -47,7 +47,7 @@ void GLFWServices::addKeyBinding(GLuint key, const Callback& callback)
 
 void GLFWServices::triggerKeyPress(GLuint key, GLuint action)
 {
-	if (action == GLFW_PRESS) {
+	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 		if(keypressCallbacks.count(key) > 0) {
 			keypressCallbacks[key]();
 		}
