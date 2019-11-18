@@ -135,10 +135,19 @@ void DaeReader::parse(const std::string& path)
 	for (int i = 0; i < vertexDefinitions.size(); i = i + triInputs.size()) {
 		GLuint offset = i;
 
+		glm::vec3 v;
+		glm::vec3 vn;
+		glm::vec2 vt;
+		glm::vec4 vc;
+
 		for (int j = 0; j < triInputs.size(); j++) {
 			std::string source = triInputs[j];
 			std::cout << source << std::endl;
+			// fetch data from source and add to vertex attributes above
 		}
+
+		Vertex v = Vertex(v, vn, vt, vc);
+		vertices.push_back(v);
 
 		// update offset for the next set
 		offset += triInputs.size();
