@@ -202,7 +202,7 @@ void DaeReader::parse(const std::string& path, Model& model)
 	Mesh m = Mesh();
 	m.setVertexes(vertices);
 	m.setIndices(indices);
-	//m.init();
+	m.init();
 
 	Object o = Object();
 	o.addMesh(m);

@@ -30,15 +30,10 @@ int main(int argc, char** argv) {
 
 	//string modelPath;
 	//
-	string modelPath = "models/lowpolyboat-dae/low_poly_boat.dae";
-	//string modelPath = "models/creeper-dae/creeper.dae";
+	//string modelPath = "models/lowpolyboat-dae/low_poly_boat.dae";
+	string modelPath = "models/creeper-dae/creeper.dae";
 
-	Model m = Model();
 
-	DaeReader dReader = DaeReader();
-	dReader.parse(modelPath, m);
-
-	/*
 	// init service utilities for console and OBJ reader
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);	
 	ConsoleServices console = ConsoleServices(hConsole, &modelPath);
@@ -92,22 +87,26 @@ int main(int argc, char** argv) {
 	// set global gl states
 	glEnable(GL_DEPTH_TEST);
 	
-	addModel(console, modelPath, oReader, models);
+	//addModel(console, modelPath, oReader, models);
 
+	Model m = Model();
+
+	DaeReader dReader = DaeReader();
+	dReader.parse(modelPath, m);
 
 	while (!glfw.shouldClose()) {
 
 		program.update();
 
 		for (int i = 0; i < models.size(); i++) {
-			models[i].render(program.id());
+		//	models[i].render(program.id());
+			m.render(program.id());
 		}
 
 		glfw.update();
 	}
 
 	glfw.destroy();
-	*/
 }
 
 void loadModel(std::string& modelPath, ObjReader& reader, std::vector<Model>& modelStore) {
