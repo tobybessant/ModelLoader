@@ -3,6 +3,12 @@
 #include <iostream>
 #include <regex>
 
+struct DAESourceData {
+	std::string stride;
+	std::string semantic;
+	std::vector<GLfloat> data;
+};
+
 bool DaeReader::verifyFile(std::string& path)
 {
 	return false;
@@ -12,9 +18,9 @@ void DaeReader::parse(const std::string& path)
 {
 	FILE* fp;
 	errno_t err;
-	char  line[500];
+	char line[500];
 
-	std::map<std::string, std::vector<GLfloat>> dataStores;
+	std::map<std::string, DAESourceData> dataStores;
 	std::vector<GLuint> vertexDefinitions;
 
 	std::vector<GLuint> indices;
@@ -37,14 +43,17 @@ void DaeReader::parse(const std::string& path)
 
 	// SET DATA STORES
 	std::smatch matches;
-	std::regex dataSourceExpression("<source.+id=\"([\\s\\S]+?)\"[\\s\\S]*?>[\\s\\S]+?<float_array [\\s\\S]+?>([\\s\\S]+?)<\/float_array>[\\s\\S]*?");
+	std::regex dataSourceExpression("<source.+id=\"([\\s\\S]+?)\"[\\s\\S]*?>[\\s\\S]+?<float_array [\\s\\S]+?>([\\s\\S]+?)<\/float_array>[\\s\\S]*?stride=\"([\\s\\S]+?)\"");
 
 	while (std::regex_search(fileStringCpy, matches, dataSourceExpression)) {
 		std::cout << "> Processing " << matches[1] << " . . ." << std::endl;
 
+		DAESourceData source = DAESourceData();
+		
+		source.stride = matches[3];
+
 		std::vector<GLfloat> v;
 		std::string values = matches[2];
-
 		char* token;
 		char* nextToken = nullptr;
 
@@ -55,7 +64,8 @@ void DaeReader::parse(const std::string& path)
 		}
 
 		// add match data to map
-		dataStores[matches[1]] =  v;
+		source.data = v;
+		dataStores[matches[1]] = source;
 		fileStringCpy = matches.suffix();
 	}
 
@@ -64,11 +74,13 @@ void DaeReader::parse(const std::string& path)
 
 	std::regex vertPositions("<vertices.*id=\"(.*?)\".*>[\\s\\S]*?<input.*POSITION.*source=\"(.*?)\".*\/>[\\s\\S]*?<\/vertices>");
 	while (std::regex_search(fileStringCpy, matches, vertPositions)) {
-		std::string source = matches[1];
-		// remove hash
-		std::string source_ref = source.substr(1, source.size());
+		//std::string id = matches[1];
+		//std::string idRef = id.substr(1, id.size());
 
-		vertInputs[source] = matches[2];
+		std::string source = matches[2];
+		std::string sourceRef = source.substr(1, source.size());
+
+		vertInputs[matches[1]] = sourceRef;
 
 		// add match data to map
 		fileStringCpy = matches.suffix();
@@ -78,9 +90,9 @@ void DaeReader::parse(const std::string& path)
 	fileStringCpy = fileString;
 	std::map<GLuint, std::string> triInputs;
 
-	std::regex triVertex("<triangles.*>[\\s\\S]*?<input.*VERTEX.*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
-	std::regex triNormal("<triangles.*>[\\s\\S]*?<input.*NORMAL.*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
-	std::regex triTexcoord("<triangles.*>[\\s\\S]*?<input.*TEXCOORD.*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
+	std::regex triVertex("<triangles.*>[\\s\\S]*?<input.*(VERTEX).*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
+	std::regex triNormal("<triangles.*>[\\s\\S]*?<input.*(NORMAL).*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
+	std::regex triTexcoord("<triangles.*>[\\s\\S]*?<input.*(TEXCOORD).*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
 
 	std::vector<std::regex> triInputExpressions = {
 		triNormal,
@@ -93,14 +105,17 @@ void DaeReader::parse(const std::string& path)
 	for (int i = 0; i < triInputExpressions.size(); i++) {
 
 		while (std::regex_search(fileStringCpy, matches, triInputExpressions[i])) {
-			std::string source = matches[1];
+			std::string source = matches[2];
 			std::string source_ref = source.substr(1, source.size());
+			
 			// remove hash
 			if (vertInputs.count(source_ref) > 0 ) {
-				triInputs[std::stoi(matches[2])] = vertInputs[source_ref];
+				triInputs[std::stoi(matches[3])] = vertInputs[source_ref];
+				dataStores[vertInputs[source_ref]].semantic = matches[1];
 			}	
 			else {
-				triInputs[std::stoi(matches[2])] = source_ref;
+				triInputs[std::stoi(matches[3])] = source_ref;
+				dataStores[source_ref].semantic = matches[1];
 			}
 
 			// add match data to map
@@ -135,19 +150,32 @@ void DaeReader::parse(const std::string& path)
 	for (int i = 0; i < vertexDefinitions.size(); i = i + triInputs.size()) {
 		GLuint offset = i;
 
-		glm::vec3 v;
-		glm::vec3 vn;
-		glm::vec2 vt;
-		glm::vec4 vc;
+		glm::vec3 v = glm::vec3();
+		glm::vec3 vn = glm::vec3();
+		glm::vec2 vt = glm::vec2();
+		glm::vec4 vc = glm::vec4();
 
 		for (int j = 0; j < triInputs.size(); j++) {
-			std::string source = triInputs[j];
-			std::cout << source << std::endl;
+			std::string sourceId = triInputs[j];
+			std::cout << sourceId << std::endl;
+			
+			GLuint currentIndex = vertexDefinitions[i + j];
+			std::cout << currentIndex << std::endl;
+			
 			// fetch data from source and add to vertex attributes above
+			DAESourceData d = dataStores[sourceId];
+
+			if (stoi(d.stride) == 2) {
+
+			}
+			else if (stoi(d.stride) == 3) {
+
+			}
+
 		}
 
-		Vertex v = Vertex(v, vn, vt, vc);
-		vertices.push_back(v);
+		Vertex vertex = Vertex(v, vn, vt, vc);
+		vertices.push_back(vertex);
 
 		// update offset for the next set
 		offset += triInputs.size();
