@@ -13,43 +13,58 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\File Readers">
+      <UniqueIdentifier>{cf34be3d-9ccf-4ecc-9245-5d50a7f16f4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\File Readers">
+      <UniqueIdentifier>{bc7d0442-bf5c-478d-b714-e26dde2fb88f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Services">
+      <UniqueIdentifier>{bebd54be-1bed-4b03-95c0-b7b47e0b4691}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Services">
+      <UniqueIdentifier>{e249a4c8-1a3b-405e-af77-11dde794d687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Model">
+      <UniqueIdentifier>{afe5a745-45ab-4c36-a9b1-63408413ff81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Model">
+      <UniqueIdentifier>{54b10bd5-94e4-4aa2-8a01-9ee2e267b88c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModelLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ModelReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GLFWServices.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderProgram.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GLEWServices.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ShaderLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DaeReader.cpp">
+      <Filter>Source Files\File Readers</Filter>
     </ClCompile>
     <ClCompile Include="ObjReader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\File Readers</Filter>
+    </ClCompile>
+    <ClCompile Include="GLEWServices.cpp">
+      <Filter>Source Files\Services</Filter>
     </ClCompile>
     <ClCompile Include="ConsoleServices.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Services</Filter>
     </ClCompile>
-    <ClCompile Include="DaeReader.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GLFWServices.cpp">
+      <Filter>Source Files\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -62,47 +77,41 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ModelReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GLFWServices.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderProgram.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GLEWServices.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShaderLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshConfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DaeReader.h">
+      <Filter>Header Files\File Readers</Filter>
     </ClInclude>
     <ClInclude Include="ObjReader.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\File Readers</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleServices.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Services</Filter>
     </ClInclude>
-    <ClInclude Include="DaeReader.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GLEWServices.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="GLFWServices.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

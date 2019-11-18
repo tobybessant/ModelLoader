@@ -1,8 +1,7 @@
 #pragma once
-#include "MeshConfig.h"
 
 #include "Vertex.h"
-
+#include "Material.h"
 #include <vector>
 #include <GL\glew.h>
 #include <glm\ext\vector_float3.hpp>
@@ -13,7 +12,6 @@ class Mesh
 public:
 	Mesh();
 
-	void setup(MeshConfig& config);
 	void setIndices(std::vector<GLuint> i);
 	void setVertexes(std::vector<Vertex> v);
 	void setMaterial(Material& mat);

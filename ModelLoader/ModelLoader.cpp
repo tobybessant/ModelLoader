@@ -4,12 +4,10 @@
 #include "GL/freeglut.h"
 #include "GLFW/glfw3.h"
 
-#include "ModelReader.h"
 #include "GLFWServices.h"
 #include "GLEWServices.h"
 #include "ShaderProgram.h"
 #include "Mesh.h"
-#include "MeshConfig.h"
 
 #include "ObjReader.h"
 #include "DaeReader.h"
@@ -94,13 +92,14 @@ int main(int argc, char** argv) {
 	DaeReader dReader = DaeReader();
 	dReader.parse(modelPath, m);
 
+	models.push_back(m);
+
 	while (!glfw.shouldClose()) {
 
 		program.update();
 
 		for (int i = 0; i < models.size(); i++) {
-		//	models[i].render(program.id());
-			m.render(program.id());
+			models[i].render(program.id());
 		}
 
 		glfw.update();

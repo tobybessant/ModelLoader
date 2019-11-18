@@ -1,7 +1,5 @@
 #include "Mesh.h"
 
-#include "MeshConfig.h"
-
 #include "Vertex.h"
 
 #include "GL/glew.h"
@@ -23,12 +21,6 @@ Mesh::Mesh()
 {
 }
 
-void Mesh::setup(MeshConfig& _config)
-{
-	vertices = _config.vertices;
-	indices = _config.indices;
-	material = _config.material;
-}
 
 void Mesh::init()
 {
