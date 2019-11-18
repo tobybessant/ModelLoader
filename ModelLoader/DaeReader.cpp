@@ -1,4 +1,5 @@
 #include "DaeReader.h"
+#include <string>
 #include <iostream>
 #include <regex>
 
@@ -14,6 +15,8 @@ void DaeReader::parse(const std::string& path)
 	char  line[500];
 
 	std::map<std::string, std::vector<GLfloat>> dataStores;
+	std::vector<GLuint> vertexDefinitions;
+
 	std::vector<GLuint> indices;
 	std::vector<Vertex> vertices;
 
@@ -56,22 +59,16 @@ void DaeReader::parse(const std::string& path)
 		fileStringCpy = matches.suffix();
 	}
 
-	// FETCH INDICES
-	fileStringCpy = fileString;
-	std::regex indicesExpression("<triangles.*>[\\s\\S]*<p>([\\s\\S]*)</p>[\\s\\S]*</triangles>");
+	// GET VERTICES INPUTS
+	std::map<std::string, std::string> vertInputs;
 
-	std::cout << "> Loading indices. . ." << std::endl;
-	while (std::regex_search(fileStringCpy, matches, indicesExpression)) {
-		std::string values = matches[1];
+	std::regex vertPositions("<vertices.*id=\"(.*?)\".*>[\\s\\S]*?<input.*POSITION.*source=\"(.*?)\".*\/>[\\s\\S]*?<\/vertices>");
+	while (std::regex_search(fileStringCpy, matches, vertPositions)) {
+		std::string source = matches[1];
+		// remove hash
+		std::string source_ref = source.substr(1, source.size());
 
-		char* token;
-		char* nextToken = nullptr;
-
-		token = strtok_s((char*)values.c_str(), " ", &nextToken);
-		while (token != NULL) {
-			indices.push_back(std::stoi(token));
-			token = strtok_s(NULL, " ", &nextToken);
-		}
+		vertInputs[source] = matches[2];
 
 		// add match data to map
 		fileStringCpy = matches.suffix();
@@ -79,8 +76,7 @@ void DaeReader::parse(const std::string& path)
 
 	// LOAD INPUT DATA
 	fileStringCpy = fileString;
-	std::map<std::string, GLuint> triInputs;
-	std::map<std::string, std::string> vertInputs;
+	std::map<GLuint, std::string> triInputs;
 
 	std::regex triVertex("<triangles.*>[\\s\\S]*?<input.*VERTEX.*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
 	std::regex triNormal("<triangles.*>[\\s\\S]*?<input.*NORMAL.*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
@@ -91,26 +87,62 @@ void DaeReader::parse(const std::string& path)
 		triTexcoord,
 		triVertex
 	};
-	
-	std::cout << "> Preparing vertices. . ." << std::endl;
+
+	std::cout << "> Preparing vertex data. . ." << std::endl;
 	// get triangle inputs
 	for (int i = 0; i < triInputExpressions.size(); i++) {
 
 		while (std::regex_search(fileStringCpy, matches, triInputExpressions[i])) {
-			triInputs[matches[1]] = std::stoi(matches[2]);
-			
+			std::string source = matches[1];
+			std::string source_ref = source.substr(1, source.size());
+			// remove hash
+			if (vertInputs.count(source_ref) > 0 ) {
+				triInputs[std::stoi(matches[2])] = vertInputs[source_ref];
+			}	
+			else {
+				triInputs[std::stoi(matches[2])] = source_ref;
+			}
+
 			// add match data to map
 			fileStringCpy = matches.suffix();
 		}
 		fileStringCpy = fileString;
 	}
+	
+	// FETCH INDICES
+	fileStringCpy = fileString;
+	std::regex vertexDefinitionsExpression("<triangles.*>[\\s\\S]*<p>([\\s\\S]*)</p>[\\s\\S]*</triangles>");
 
-	// get vertices inputs
-	std::regex vertPositions("<vertices.*>[\\s\\S]*?<input.*POSITION.*source=\"(.*?)\".*\/>[\\s\\S]*?<\/vertices>");
-	while (std::regex_search(fileStringCpy, matches, vertPositions)) {
-		vertInputs[matches[1]];
+	std::cout << "> Loading indices. . ." << std::endl;
+	while (std::regex_search(fileStringCpy, matches, vertexDefinitionsExpression)) {
+		std::string values = matches[1];
+
+		char* token;
+		char* nextToken = nullptr;
+
+		token = strtok_s((char*)values.c_str(), " ", &nextToken);
+		while (token != NULL) {
+			vertexDefinitions.push_back(std::stoi(token));
+			token = strtok_s(NULL, " ", &nextToken);
+		}
 
 		// add match data to map
 		fileStringCpy = matches.suffix();
 	}
+
+	// BUILD VERTICES
+	std::cout << "> Building model vertices. . ." << std::endl;
+	for (int i = 0; i < vertexDefinitions.size(); i = i + triInputs.size()) {
+		GLuint offset = i;
+
+		for (int j = 0; j < triInputs.size(); j++) {
+			std::string source = triInputs[j];
+			std::cout << source << std::endl;
+		}
+
+		// update offset for the next set
+		offset += triInputs.size();
+		std::cout << "> Loaded "<< i << std::endl;
+	}
+
 }
