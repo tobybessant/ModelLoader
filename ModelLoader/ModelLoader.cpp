@@ -30,11 +30,13 @@ int main(int argc, char** argv) {
 
 	//string modelPath;
 	//
-	//string modelPath = "models/lowpolyboat-dae/low_poly_boat.dae";
-	string modelPath = "models/creeper-dae/creeper.dae";
+	string modelPath = "models/lowpolyboat-dae/low_poly_boat.dae";
+	//string modelPath = "models/creeper-dae/creeper.dae";
+
+	Model m = Model();
 
 	DaeReader dReader = DaeReader();
-	dReader.parse(modelPath);
+	dReader.parse(modelPath, m);
 
 	/*
 	// init service utilities for console and OBJ reader

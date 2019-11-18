@@ -14,7 +14,7 @@ bool DaeReader::verifyFile(std::string& path)
 	return false;
 }
 
-void DaeReader::parse(const std::string& path)
+void DaeReader::parse(const std::string& path, Model& model)
 {
 	FILE* fp;
 	errno_t err;
@@ -25,8 +25,6 @@ void DaeReader::parse(const std::string& path)
 
 	std::vector<GLuint> indices;
 	std::vector<Vertex> vertices;
-
-	Model loadedModel = Model();
 
 	std::string fileString;
 	std::string fileStringCpy;
@@ -90,14 +88,16 @@ void DaeReader::parse(const std::string& path)
 	fileStringCpy = fileString;
 	std::map<GLuint, std::string> triInputs;
 
-	std::regex triVertex("<triangles.*>[\\s\\S]*?<input.*(VERTEX).*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
-	std::regex triNormal("<triangles.*>[\\s\\S]*?<input.*(NORMAL).*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
-	std::regex triTexcoord("<triangles.*>[\\s\\S]*?<input.*(TEXCOORD).*source=\"(.*?)\".*offset=\"(.*?)\"\/>[\\s\\S]*?<\/triangles>");
+	std::regex triVertex("<input.*(?=.*semantic=\"(VERTEX)\").*(?=.*offset=\"(.*?)\").*(?=.*source=\"(.*?)\")");
+	std::regex triNormal("<input.*(?=.*semantic=\"(NORMAL)\").*(?=.*offset=\"(.*?)\").*(?=.*source=\"(.*?)\")");
+	std::regex triTexcoord("<input.*(?=.*semantic=\"(TEXCOORD)\").*(?=.*offset=\"(.*?)\").*(?=.*source=\"(.*?)\")");
+	std::regex triColour("<input.*(?=.*semantic=\"(COLOR)\").*(?=.*offset=\"(.*?)\").*(?=.*source=\"(.*?)\")");
 
 	std::vector<std::regex> triInputExpressions = {
 		triNormal,
 		triTexcoord,
-		triVertex
+		triVertex,
+		triColour
 	};
 
 	std::cout << "> Preparing vertex data. . ." << std::endl;
@@ -105,16 +105,16 @@ void DaeReader::parse(const std::string& path)
 	for (int i = 0; i < triInputExpressions.size(); i++) {
 
 		while (std::regex_search(fileStringCpy, matches, triInputExpressions[i])) {
-			std::string source = matches[2];
+			std::string source = matches[3];
 			std::string source_ref = source.substr(1, source.size());
 			
 			// remove hash
 			if (vertInputs.count(source_ref) > 0 ) {
-				triInputs[std::stoi(matches[3])] = vertInputs[source_ref];
+				triInputs[std::stoi(matches[2])] = vertInputs[source_ref];
 				dataStores[vertInputs[source_ref]].semantic = matches[1];
 			}	
 			else {
-				triInputs[std::stoi(matches[3])] = source_ref;
+				triInputs[std::stoi(matches[2])] = source_ref;
 				dataStores[source_ref].semantic = matches[1];
 			}
 
@@ -157,19 +157,31 @@ void DaeReader::parse(const std::string& path)
 
 		for (int j = 0; j < triInputs.size(); j++) {
 			std::string sourceId = triInputs[j];
-			std::cout << sourceId << std::endl;
 			
 			GLuint currentIndex = vertexDefinitions[i + j];
-			std::cout << currentIndex << std::endl;
 			
 			// fetch data from source and add to vertex attributes above
-			DAESourceData d = dataStores[sourceId];
+			DAESourceData source = dataStores[sourceId];
 
-			if (stoi(d.stride) == 2) {
-
+			if (source.semantic == "VERTEX") {
+				v.x = source.data[currentIndex * 3];
+				v.y = source.data[currentIndex * 3 + 1];
+				v.z = source.data[currentIndex * 3 + 2];
 			}
-			else if (stoi(d.stride) == 3) {
-
+			else if (source.semantic == "NORMAL") {
+				vn.x = source.data[currentIndex * 3];
+				vn.y = source.data[currentIndex * 3 + 1];
+				vn.z = source.data[currentIndex * 3 + 2];
+			}
+			else if (source.semantic == "TEXCOORD") {
+				vt.s = source.data[currentIndex * 2];
+				vt.t = source.data[currentIndex * 2 + 1];
+			}
+			else if (source.semantic == "COLOR") {
+				vc.r = source.data[currentIndex * 3];
+				vc.g = source.data[currentIndex * 3 + 1];
+				vc.b = source.data[currentIndex * 3 + 2];
+				vc.a = source.data[currentIndex * 3 + 3];
 			}
 
 		}
@@ -179,7 +191,21 @@ void DaeReader::parse(const std::string& path)
 
 		// update offset for the next set
 		offset += triInputs.size();
-		std::cout << "> Loaded "<< i << std::endl;
 	}
 
+	for (size_t i = 0; i < vertices.size(); i++)
+	{
+		indices.push_back(i);
+	}
+
+	// generate model
+	Mesh m = Mesh();
+	m.setVertexes(vertices);
+	m.setIndices(indices);
+	//m.init();
+
+	Object o = Object();
+	o.addMesh(m);
+
+	model.addObject(o);
 }
