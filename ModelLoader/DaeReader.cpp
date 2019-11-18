@@ -178,10 +178,10 @@ void DaeReader::parse(const std::string& path, Model& model)
 				vt.t = source.data[currentIndex * 2 + 1];
 			}
 			else if (source.semantic == "COLOR") {
-				vc.r = source.data[currentIndex * 3];
-				vc.g = source.data[currentIndex * 3 + 1];
-				vc.b = source.data[currentIndex * 3 + 2];
-				vc.a = source.data[currentIndex * 3 + 3];
+				vc.r = source.data[currentIndex * 4];
+				vc.g = source.data[currentIndex * 4 + 1];
+				vc.b = source.data[currentIndex * 4 + 2];
+				vc.a = source.data[currentIndex * 4 + 3];
 			}
 
 		}
