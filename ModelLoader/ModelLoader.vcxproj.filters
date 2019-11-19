@@ -113,6 +113,9 @@
     <ClInclude Include="Vertex.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
+    <ClInclude Include="FileReader.h">
+      <Filter>Header Files\File Readers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="media\textures\awesomeface.png">

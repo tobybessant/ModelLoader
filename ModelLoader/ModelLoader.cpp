@@ -16,8 +16,8 @@
 using namespace std;
 
 void removeModel(std::vector<Model>* modelStore);
-void loadModel(std::string& modelPath, ObjReader& reader, std::vector<Model>& modelStore);
-void addModel(ConsoleServices& console, std::string& modelPath, ObjReader& reader, std::vector<Model>& modelStore);
+void loadModel(std::string& modelPath, FileReader& reader, std::vector<Model>& modelStore);
+void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Model>& modelStore);
 
 extern GLuint currentlyActiveModel = 0;
 
@@ -26,10 +26,10 @@ int main(int argc, char** argv) {
 
 	vector<Model> models;
 
-	//string modelPath;
+	string modelPath;
 	//
 	//string modelPath = "models/lowpolyboat-dae/low_poly_boat.dae";
-	string modelPath = "models/creeper-dae/creeper.dae";
+	//string modelPath = "models/creeper-dae/creeper.dae";
 
 
 	// init service utilities for console and OBJ reader
@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 	
 
 	glfw.addKeyBinding(GLFW_KEY_KP_ADD, [&]() {
-		addModel(console, modelPath, oReader, models);
+		addModel(console, modelPath, models);
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_KP_SUBTRACT, [&]() {
@@ -85,14 +85,7 @@ int main(int argc, char** argv) {
 	// set global gl states
 	glEnable(GL_DEPTH_TEST);
 	
-	//addModel(console, modelPath, oReader, models);
-
-	Model m = Model();
-
-	DaeReader dReader = DaeReader();
-	dReader.parse(modelPath, m);
-
-	models.push_back(m);
+	addModel(console, modelPath, models);
 
 	while (!glfw.shouldClose()) {
 
@@ -108,7 +101,7 @@ int main(int argc, char** argv) {
 	glfw.destroy();
 }
 
-void loadModel(std::string& modelPath, ObjReader& reader, std::vector<Model>& modelStore) {
+void loadModel(std::string& modelPath, FileReader& reader, std::vector<Model>& modelStore) {
 	// read model file
 	Model model = Model();
 	reader.parse(modelPath, model);
@@ -116,21 +109,46 @@ void loadModel(std::string& modelPath, ObjReader& reader, std::vector<Model>& mo
 	currentlyActiveModel = modelStore.size() - 1;
 }
 
-void addModel(ConsoleServices& console, std::string& modelPath, ObjReader& reader, std::vector<Model>& modelStore)
+void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Model>& modelStore)
 {
 	console.askForModel();
-	if (reader.verifyFile(modelPath)) {
-		try {
-			loadModel(modelPath, reader, modelStore);
-		}
-		catch(...) {
-			cout << "error!" << endl;
+
+	// identify file format
+	string fileExt = "";
+	for (size_t i = modelPath.size() - 1; i >= 0; i--)
+	{
+		fileExt = modelPath[i] + fileExt;
+		if (modelPath[i] == '.') {
+			break;
 		}
 	}
-	else
-	{
-		console.error(console.InvalidFile);
-		addModel(console, modelPath, reader, modelStore);
+
+	string objExt = ".obj";
+	string daeExt = ".dae";
+
+	if (fileExt.compare(objExt) == 0) {
+		ObjReader r = ObjReader();
+		if (r.verifyFile(modelPath)) {
+			loadModel(modelPath, r, modelStore);
+		}
+		else {
+			console.error(console.InvalidFile);
+			addModel(console, modelPath, modelStore);
+		}
+	}
+	else if (fileExt.compare(daeExt) == 0) {
+		DaeReader r = DaeReader();
+		if (r.verifyFile(modelPath)) {
+			loadModel(modelPath, r, modelStore);
+		}
+		else {
+			console.error(console.InvalidFile);
+			addModel(console, modelPath, modelStore);
+		}
+	}
+	else {
+		console.error(console.UnsupportedFormat);
+		addModel(console, modelPath, modelStore);
 	}
 }
 

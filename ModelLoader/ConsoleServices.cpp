@@ -71,6 +71,9 @@ void ConsoleServices::error(ERRORS errorType)
 	case ReadError:
 		std::cout << "ERR: Error reading file. File may be malformed or corrupt. Please use valid files only.";
 		break;
+	case UnsupportedFormat:
+		std::cout << "ERR: Unsupported format. File formats supported: .obj, .dae";
+		break;
 	}
 
 	std::cout << std::endl;

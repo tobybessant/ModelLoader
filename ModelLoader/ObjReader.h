@@ -1,4 +1,6 @@
 #pragma once
+#include "FileReader.h"
+
 #include "Model.h"
 #include "Vertex.h"
 
@@ -10,10 +12,9 @@
 #include <string>
 #include <sstream>
 
-class ObjReader
+class ObjReader : public FileReader
 {
 public:
-	bool verifyFile(std::string& path);
 	void parse(std::string &path, Model &model);
 
 private:

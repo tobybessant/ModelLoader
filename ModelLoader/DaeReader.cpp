@@ -9,12 +9,8 @@ struct DAESourceData {
 	std::vector<GLfloat> data;
 };
 
-bool DaeReader::verifyFile(std::string& path)
-{
-	return false;
-}
 
-void DaeReader::parse(const std::string& path, Model& model)
+void DaeReader::parse(std::string& path, Model& model)
 {
 	FILE* fp;
 	errno_t err;

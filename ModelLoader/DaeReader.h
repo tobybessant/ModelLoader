@@ -1,16 +1,15 @@
 #pragma once
+#include "FileReader.h"
 #include "Model.h"
 
 #include <string>
 #include <vector>
 #include <map>
 
-class DaeReader
+class DaeReader: public FileReader
 {
 public:
-	bool verifyFile(std::string& path);
-	void parse(const std::string& path, Model& model);
-private:
+	void parse(std::string& path, Model& model);
 
 };
 

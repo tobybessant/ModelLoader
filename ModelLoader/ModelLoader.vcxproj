@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="ConsoleServices.h" />
     <ClInclude Include="DaeReader.h" />
+    <ClInclude Include="FileReader.h" />
     <ClInclude Include="GLEWServices.h" />
     <ClInclude Include="GLFWServices.h" />
     <ClInclude Include="Material.h" />
