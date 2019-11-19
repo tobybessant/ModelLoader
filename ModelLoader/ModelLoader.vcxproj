@@ -142,15 +142,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleServices.h" />
-    <ClInclude Include="DaeReader.h" />
-    <ClInclude Include="FileReader.h" />
+    <ClInclude Include="DAELoader.h" />
+    <ClInclude Include="ILoader.h" />
     <ClInclude Include="GLEWServices.h" />
     <ClInclude Include="GLFWServices.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="ObjReader.h" />
+    <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Vertex.h" />

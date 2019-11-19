@@ -5,7 +5,7 @@
 
 #include <string>
 
-class FileReader {
+class ILoader {
 public:
 	virtual void parse(std::string& path, Model& model) = 0;
 

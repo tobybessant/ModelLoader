@@ -1,9 +1,9 @@
-#include "ObjReader.h"
+#include "OBJLoader.h"
 #include <map>
 
 using namespace std;
 
-void ObjReader::parse(string &path, Model &model)
+void OBJLoader::parse(string &path, Model &model)
 {
 	// init file reader components
 	FILE* fp;
@@ -179,7 +179,7 @@ void ObjReader::parse(string &path, Model &model)
 }
 
 // read in the mtl file path and a reference to the store for the materials
-void ObjReader::loadMtl(std::string& mtlPath, std::map<std::string, Material>& materials)
+void OBJLoader::loadMtl(std::string& mtlPath, std::map<std::string, Material>& materials)
 {
 	// init file stream components
 	FILE* mtlFp;
@@ -240,7 +240,7 @@ void ObjReader::loadMtl(std::string& mtlPath, std::map<std::string, Material>& m
 
 // when given a line with 4 space separated components where the last 3 are float values, 
 // this function will return a vec3 using said values
-glm::vec3 ObjReader::createVector3(char* line) {
+glm::vec3 OBJLoader::createVector3(char* line) {
 
 	char* token;
 	char* nextToken = nullptr;
@@ -268,7 +268,7 @@ glm::vec3 ObjReader::createVector3(char* line) {
 
 // when given a line with 3 space separated components where the last 2 are float values, 
 // this function will return a vec2 using said values
-glm::vec2 ObjReader::createVector2(char* line) {
+glm::vec2 OBJLoader::createVector2(char* line) {
 	char* token;
 	char* nextToken = nullptr;
 
@@ -294,7 +294,7 @@ glm::vec2 ObjReader::createVector2(char* line) {
 }
 
 // when given a line with 2 space separated components this function will return the second
-std::string ObjReader::getValue(char* line)
+std::string OBJLoader::getValue(char* line)
 {
 	// remove newline character
 	char* pos;
@@ -329,7 +329,7 @@ std::string ObjReader::getValue(char* line)
 }
 
 // when given a line with 2 space separated components return the latter as a string
-std::string ObjReader::getFileName(char* line)
+std::string OBJLoader::getFileName(char* line)
 {
 	// get pointer to first ocurrence of space character
 	char* result = strchr(line, ' ');

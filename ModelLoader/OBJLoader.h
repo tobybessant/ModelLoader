@@ -1,5 +1,5 @@
 #pragma once
-#include "FileReader.h"
+#include "ILoader.h"
 
 #include "Model.h"
 #include "Vertex.h"
@@ -12,7 +12,7 @@
 #include <string>
 #include <sstream>
 
-class ObjReader : public FileReader
+class OBJLoader : public ILoader
 {
 public:
 	void parse(std::string &path, Model &model);

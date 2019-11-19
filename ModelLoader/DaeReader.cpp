@@ -1,4 +1,4 @@
-#include "DaeReader.h"
+#include "DAELoader.h"
 #include <string>
 #include <iostream>
 #include <regex>
@@ -10,7 +10,7 @@ struct DAESourceData {
 	std::vector<GLfloat> data;
 };
 
-void DaeReader::parse(std::string& path, Model& model)
+void DAELoader::parse(std::string& path, Model& model)
 {
 	// init file reader components
 	FILE* fp;
@@ -250,7 +250,7 @@ void DaeReader::parse(std::string& path, Model& model)
 		// if the material source is not dae template image for no texture then add material using the found texture
 		if (materialSource != "notexture.png") {
 			Material mat = Material();
-			mat.diffuseTextureMapPath = FileReader::getDirectory(path) + materialSource;
+			mat.diffuseTextureMapPath = getDirectory(path) + materialSource;
 			mesh.setMaterial(mat);
 		}
 		break;

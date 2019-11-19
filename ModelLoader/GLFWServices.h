@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Model.h"
-#include "ObjReader.h"
+#include "OBJLoader.h"
 #include "GLFW/glfw3.h"
 #include <map>
 #include <vector>

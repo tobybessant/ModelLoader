@@ -1,12 +1,12 @@
 #pragma once
-#include "FileReader.h"
+#include "ILoader.h"
 #include "Model.h"
 
 #include <string>
 #include <vector>
 #include <map>
 
-class DaeReader: public FileReader
+class DAELoader: public ILoader
 {
 public:
 	void parse(std::string& path, Model& model);

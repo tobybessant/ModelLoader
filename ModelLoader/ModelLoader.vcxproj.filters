@@ -83,12 +83,6 @@
     <ClInclude Include="ShaderLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DaeReader.h">
-      <Filter>Header Files\File Readers</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjReader.h">
-      <Filter>Header Files\File Readers</Filter>
-    </ClInclude>
     <ClInclude Include="ConsoleServices.h">
       <Filter>Header Files\Services</Filter>
     </ClInclude>
@@ -113,7 +107,13 @@
     <ClInclude Include="Vertex.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
-    <ClInclude Include="FileReader.h">
+    <ClInclude Include="ILoader.h">
+      <Filter>Header Files\File Readers</Filter>
+    </ClInclude>
+    <ClInclude Include="DAELoader.h">
+      <Filter>Header Files\File Readers</Filter>
+    </ClInclude>
+    <ClInclude Include="OBJLoader.h">
       <Filter>Header Files\File Readers</Filter>
     </ClInclude>
   </ItemGroup>

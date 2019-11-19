@@ -9,14 +9,14 @@
 #include "ShaderProgram.h"
 #include "Mesh.h"
 
-#include "ObjReader.h"
-#include "DaeReader.h"
+#include "OBJLoader.h"
+#include "DAELoader.h"
 #include "ConsoleServices.h"
 
 using namespace std;
 
 void removeModel(std::vector<Model>* modelStore, GLuint& currentlyActiveModel);
-void loadModel(std::string& modelPath, FileReader& reader, std::vector<Model>& modelStore, GLuint& currentlyActiveModel);
+void loadModel(std::string& modelPath, ILoader& reader, std::vector<Model>& modelStore, GLuint& currentlyActiveModel);
 void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Model>& modelStore, GLuint& currentlyActiveModel);
 
 int main(int argc, char** argv) {
@@ -113,10 +113,10 @@ int main(int argc, char** argv) {
 }
 
 // load a new model using the path, a FileReader, the model store to add it to, and at the end update the currently active model
-void loadModel(std::string& modelPath, FileReader& reader, std::vector<Model>& modelStore, GLuint& currentlyActiveModel) {
+void loadModel(std::string& modelPath, ILoader* loader, std::vector<Model>& modelStore, GLuint& currentlyActiveModel) {
 	// parse model file into new model
 	Model model = Model();
-	reader.parse(modelPath, model);
+	loader->parse(modelPath, model);
 
 	// add loaded model into array of models
 	modelStore.push_back(model);
@@ -141,46 +141,33 @@ void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Mode
 			}
 		}
 
-		// if file format is valid, create the appropriate reader type and check file exists
+		ILoader* loader = nullptr;
 		if (fileExt.compare(".obj") == 0) {
-			ObjReader r = ObjReader();
-			if (r.verifyFile(modelPath)) {
-				// if file exists, load into model store
-				try {
-					loadModel(modelPath, r, modelStore, currentlyActiveModel);
-				}
-				catch(...) {
-					console.error(console.ReadError);
-					addModel(console, modelPath, modelStore, currentlyActiveModel);
-				}
-			}
-			else {
-				// if file does not exist, log error and prompt again
-				console.error(console.InvalidFile);
-				addModel(console, modelPath, modelStore, currentlyActiveModel);
-			}
+			loader = new OBJLoader();
 		}
 		else if (fileExt.compare(".dae") == 0) {
-			DaeReader r = DaeReader();
-			if (r.verifyFile(modelPath)) {
-				// if file exists, load into model store
-				try {
-					loadModel(modelPath, r, modelStore, currentlyActiveModel);
-				}
-				catch (...) {
-					console.error(console.ReadError);
-					addModel(console, modelPath, modelStore, currentlyActiveModel);
-				}
+			loader = new DAELoader();
+		}
+		else {
+			console.error(console.UnsupportedFormat);
+			addModel(console, modelPath, modelStore, currentlyActiveModel);
+		}
+
+		// if file format is valid, create the appropriate reader type and check file exists
+		if (loader->verifyFile(modelPath)) {
+			// if file exists, load into model store
+			try {
+				loadModel(modelPath, loader, modelStore, currentlyActiveModel);
+				delete loader;
 			}
-			else {
-				// if file does not exist, log error and prompt again
-				console.error(console.InvalidFile);
+			catch(...) {
+				console.error(console.ReadError);
 				addModel(console, modelPath, modelStore, currentlyActiveModel);
 			}
 		}
 		else {
-			// if file type is unrecognised, log error and prompt again
-			console.error(console.UnsupportedFormat);
+			// if file does not exist, log error and prompt again
+			console.error(console.InvalidFile);
 			addModel(console, modelPath, modelStore, currentlyActiveModel);
 		}
 	}
