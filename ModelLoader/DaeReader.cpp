@@ -149,7 +149,7 @@ void DaeReader::parse(std::string& path, Model& model)
 		glm::vec3 v = glm::vec3();
 		glm::vec3 vn = glm::vec3();
 		glm::vec2 vt = glm::vec2();
-		glm::vec4 vc = glm::vec4();
+		glm::vec4 vc = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		for (int j = 0; j < triInputs.size(); j++) {
 			std::string sourceId = triInputs[j];

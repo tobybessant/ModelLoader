@@ -104,8 +104,14 @@ void GLFWServices::registerKeyCallbacks()
 	});
 
 	addKeyBinding(GLFW_KEY_W, [&]() {
-		if (atLeastOneModel())
+		if (!wireframeView) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			wireframeView = true;
+		}
+		else {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			wireframeView = false;
+		}
 	});
 
 }

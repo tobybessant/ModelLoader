@@ -28,6 +28,8 @@ private:
 	std::vector<Model>* models;
 	GLuint* currentlyActiveModel;
 
+	bool wireframeView = false;
+
 	ConsoleServices* console;
 
 	std::map<int, Callback> keypressCallbacks;
