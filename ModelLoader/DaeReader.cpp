@@ -210,11 +210,13 @@ void DaeReader::parse(std::string& path, Model& model)
 	// add material if there is one
 	fileStringCpy = fileString;
 	while (std::regex_search(fileStringCpy, matches, materialExpression)) {
-		std::string material_source = matches[1];
+		std::string materialSource = matches[1];
 
-		Material mat = Material();
-		mat.diffuseTextureMapPath = FileReader::getDirectory(path) + material_source;
-		m.setMaterial(mat);
+		if (materialSource != "notexture.png") {
+			Material mat = Material();
+			mat.diffuseTextureMapPath = FileReader::getDirectory(path) + materialSource;
+			m.setMaterial(mat);
+		}
 		break;
 	}
 
