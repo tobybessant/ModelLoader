@@ -18,11 +18,6 @@ void ConsoleServices::askForModel()
 	// set state to interrupt main loop
 	askedForModel = true;
 
-	for (int i = 0; i < 15; i ++) {
-		std::cout << std::endl;
-	}
-	printStartup();
-
 	// set text colour to yellow and print path promt
 	setTextColour(YELLOW);
 	std::cout << "  Path: ";

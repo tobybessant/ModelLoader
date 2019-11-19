@@ -29,6 +29,10 @@ int main(int argc, char** argv) {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	ConsoleServices console = ConsoleServices(hConsole, &modelPath);
 
+	// reset console
+	for (int i = 0; i < 15; i++) {
+		std::cout << std::endl;
+	}
 	// print startup message
 	console.printStartup();
 
@@ -37,6 +41,12 @@ int main(int argc, char** argv) {
 
 	// keybindings that require have dependancies in the scope of this file
 	glfw.addKeyBinding(GLFW_KEY_KP_ADD, [&]() {
+		// reset console for new model
+		for (int i = 0; i < 15; i++) {
+			std::cout << std::endl;
+		}
+		console.printStartup();
+
 		addModel(console, modelPath, models, currentlyActiveModel);
 	});
 
@@ -133,8 +143,13 @@ void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Mode
 		if (fileExt.compare(".obj") == 0) {
 			ObjReader r = ObjReader();
 			if (r.verifyFile(modelPath)) {
+				try {
+					loadModel(modelPath, r, modelStore, currentlyActiveModel);
+				}
+				catch(...) {
+					console.error(console.ReadError);
+				}
 				// if file exists, load into model store
-				loadModel(modelPath, r, modelStore, currentlyActiveModel);
 			}
 			else {
 				// if file does not exist, log error and prompt again
