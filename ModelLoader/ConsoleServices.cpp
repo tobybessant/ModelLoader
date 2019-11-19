@@ -15,12 +15,17 @@ void ConsoleServices::setTextColour(TEXT_COLOURS colour)
 
 void ConsoleServices::askForModel()
 {
+	// set state to interrupt main loop
 	askedForModel = true;
 
-	setTextColour(GREEN);
-	std::cout << "Path: ";
+	// set text colour to grey and print path promt
+	setTextColour(GREY);
+	std::cout << "  Path: ";
+
+	// save user input to modelPath variable
 	std::cin >> *modelPath;
 
+	// update asking for model state as console is no longer asking for model
 	askedForModel = false;
 }
 
@@ -29,50 +34,42 @@ bool ConsoleServices::askingForModel()
 	return askedForModel;
 }
 
+// print startup text
 void ConsoleServices::printStartup()
 {
 	setTextColour(CYAN);
 
-	std::cout << " _____ ______   ________  ________  _______   ___				" << std::endl;
-	std::cout << "|\\   _ \\  _   \\|\\   __  \\|\\   ___ \\|\\  ___ \\ |\\  \\				" << std::endl;
-	std::cout << "\\ \\  \\\\\\__\\ \\  \\ \\  \\|\\  \\ \\  \\_|\\ \\ \\   __/|\\ \\  \\				" << std::endl;
-	std::cout << " \\ \\  \\\\|__| \\  \\ \\  \\\\\\  \\ \\  \\ \\\\ \\ \\  \\_|/_\\ \\  \\			" << std::endl;
-	std::cout << "  \\ \\  \\    \\ \\  \\ \\  \\\\\\  \\ \\  \\_\\\\ \\ \\  \\_|\\ \\ \\  \\____		" << std::endl;
-	std::cout << "   \\ \\__\\    \\ \\__\\ \\_______\\ \\_______\\ \\_______\\ \\_______\\		" << std::endl;
-	std::cout << "    \\|__|     \\|__|\\|_______|\\|_______|\\|_______|\\|_______|		" << std::endl;
-	std::cout << " ___       ________  ________  ________  _______   ________		" << std::endl;
-	std::cout << "|\\  \\     |\\   __  \\|\\   __  \\|\\   ___ \\|\\  ___ \\ |\\   __  \\	" << std::endl;
-	std::cout << "\\ \\  \\    \\ \\  \\|\\  \\ \\  \\|\\  \\ \\  \\_|\\ \\ \\   __/|\\ \\  \\|\\  \\	" << std::endl;
-	std::cout << " \\ \\  \\    \\ \\  \\\\\\  \\ \\   __  \\ \\  \\ \\\\ \\ \\  \\_|/_\\ \\   _  _\\	" << std::endl;
-	std::cout << "  \\ \\  \\____\\ \\  \\\\\\  \\ \\  \\ \\  \\ \\  \\_\\\\ \\ \\  \\_|\\ \\ \\  \\\\  \\|	" << std::endl;
-	std::cout << "   \\ \\_______\\ \\_______\\ \\__\\ \\__\\ \\_______\\ \\_______\\ \\__\\\\ _\\	" << std::endl;
-	std::cout << "    \\|_______|\\|_______|\\|__|\\|__|\\|_______|\\|_______|\\|__|\\|__|" << std::endl;
+	const char* startupHeader = "\r\n    __  _______  ____  ________       __   ____  ___    ____  __________ \r\n   /  |/  / __ \\/ __ \\/ ____/ /      / /  / __ \\/   |  / __ \\/ ____/ __ \\\r\n  / /|_/ / / / / / / / __/ / /      / /  / / / / /| | / / / / __/ / /_/ /\r\n / /  / / /_/ / /_/ / /___/ /___   / /__/ /_/ / ___ |/ /_/ / /___/ _, _/ \r\n/_/  /_/\\____/_____/_____/_____/  /_____\\____/_/  |_/_____/_____/_/ |_|  \r\n                                                                         \r\n";
+	std::cout << startupHeader;
+
+	setTextColour(WHITE);
 	std::cout << std::endl;
+	std::cout << "  Controls:" << std::endl;
+	std::cout << "  Add Model..........Keypad +" << std::endl;
+	std::cout << "  Remove Model.......Keypad -" << std::endl;
+	std::cout << "  Translate Model....Keypad Arrows / KP 8, KP 6, KP 2, KP 4" << std::endl;
+	std::cout << "  Rotate Model.......Arrow Keys" << std::endl;
+	std::cout << "  Select Model.......F1-F5" << std::endl;
+
+	setTextColour(CYAN);
 	std::cout << std::endl;
-
-	std::cout << "To quit the program, please enter 'QQ'." << std::endl;
-
-	//std::cout << "Please enter a comma-separated list of paths to the model file you would like to load:" << std::endl;
-	std::cout << "Please enter the path to a model file you would like to load:" << std::endl;
-
-	// set console colour to grey
-	setTextColour(GREY);
-	std::cout << "Example: models/folder1/model.obj, models/folder2/model2.obj " << std::endl;
+	std::cout << "  Please enter the path to a model file you would like to load (.obj | .dae):" << std::endl;
 }
 
+// log error formatted in red based on console error enum
 void ConsoleServices::error(ERRORS errorType)
 {
 	setTextColour(RED);
 
 	switch (errorType) {
 	case InvalidFile:
-		std::cout << "ERR: Invalid or non existant file path entered. Please try again.";
+		std::cout << "  ERROR: Invalid or non existant file path entered. Please try again.";
 		break;
 	case ReadError:
-		std::cout << "ERR: Error reading file. File may be malformed or corrupt. Please use valid files only.";
+		std::cout << "  ERROR: Error reading file. File may be malformed or corrupt. Please use valid files only.";
 		break;
 	case UnsupportedFormat:
-		std::cout << "ERR: Unsupported format. File formats supported: .obj, .dae";
+		std::cout << "  ERROR: Unsupported format. File formats supported: .obj, .dae";
 		break;
 	}
 

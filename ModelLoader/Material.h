@@ -4,6 +4,7 @@
 #include <glm\ext.hpp>
 #include <GL\glew.h>
 
+// material struct to contain material details
 struct Material {
 	std::string name;
 	glm::vec3 ambient; // Ka

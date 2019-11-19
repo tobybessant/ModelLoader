@@ -43,15 +43,21 @@ void DaeReader::parse(std::string& path, Model& model)
 
 	// SET DATA STORES
 	std::smatch matches;
+
+	// this regex searches for source tags with an enclosed float array. Capture groups specify the source id, data and stride
 	std::regex dataSourceExpression("<source.+id=\"([\\s\\S]+?)\"[\\s\\S]*?>[\\s\\S]+?<float_array [\\s\\S]+?>([\\s\\S]+?)<\/float_array>[\\s\\S]*?stride=\"([\\s\\S]+?)\"");
 
+	// search file string for matches
 	while (std::regex_search(fileStringCpy, matches, dataSourceExpression)) {
 		std::cout << "> Processing " << matches[1] << " . . ." << std::endl;
 
+		// init new source object
 		DAESourceData source = DAESourceData();
 		
+		// set stride
 		source.stride = matches[3];
 
+		// add values to float vector
 		std::vector<GLfloat> v;
 		std::string values = matches[2];
 		char* token;
@@ -63,38 +69,45 @@ void DaeReader::parse(std::string& path, Model& model)
 			token = strtok_s(NULL, " ", &nextToken);
 		}
 
-		// add match data to map
+		// set data
 		source.data = v;
+
+		// add source to map where source id is the key
 		dataStores[matches[1]] = source;
+
+		// search remainder of file
 		fileStringCpy = matches.suffix();
 	}
 
 	// GET VERTICES INPUTS
 	std::map<std::string, std::string> vertInputs;
 
+	// this regex searches for a position input within a vertices element
 	std::regex vertPositions("<vertices.*id=\"(.*?)\".*>[\\s\\S]*?<input.*POSITION.*source=\"(.*?)\".*\/>[\\s\\S]*?<\/vertices>");
 	while (std::regex_search(fileStringCpy, matches, vertPositions)) {
-		//std::string id = matches[1];
-		//std::string idRef = id.substr(1, id.size());
 
+		// fetch source id without hash
 		std::string source = matches[2];
 		std::string sourceRef = source.substr(1, source.size());
 
+		// add the position input id into a map where the key is the vertices id (so it can be interchanged later)
 		vertInputs[matches[1]] = sourceRef;
 
-		// add match data to map
+		// search remainder of file
 		fileStringCpy = matches.suffix();
 	}
 
-	// LOAD INPUT DATA
+	// MATCH INPUTS TO SOURCE DATA
 	fileStringCpy = fileString;
 	std::map<GLuint, std::string> triInputs;
 
+	// a set of regex expressions that search for each type of input and capture the semantic, offset, and source id
 	std::regex triVertex("<input.*(?=.*semantic=\"(VERTEX)\").*(?=.*offset=\"(.*?)\").*(?=.*source=\"(.*?)\")");
 	std::regex triNormal("<input.*(?=.*semantic=\"(NORMAL)\").*(?=.*offset=\"(.*?)\").*(?=.*source=\"(.*?)\")");
 	std::regex triTexcoord("<input.*(?=.*semantic=\"(TEXCOORD)\").*(?=.*offset=\"(.*?)\").*(?=.*source=\"(.*?)\")");
 	std::regex triColour("<input.*(?=.*semantic=\"(COLOR)\").*(?=.*offset=\"(.*?)\").*(?=.*source=\"(.*?)\")");
 
+	// iterable list of aformentioned regex expressions
 	std::vector<std::regex> triInputExpressions = {
 		triNormal,
 		triTexcoord,
@@ -103,69 +116,91 @@ void DaeReader::parse(std::string& path, Model& model)
 	};
 
 	std::cout << "> Preparing vertex data. . ." << std::endl;
-	// get triangle inputs
+	
+	// search the file using each regex to match each input with its source
 	for (int i = 0; i < triInputExpressions.size(); i++) {
 
 		while (std::regex_search(fileStringCpy, matches, triInputExpressions[i])) {
+
+			// capture source id and remove hash
 			std::string source = matches[3];
 			std::string source_ref = source.substr(1, source.size());
 			
-			// remove hash
+			// if the source id for the given input matches the vertices element id, swap it out for the enclosed vertices input (positiions)
 			if (vertInputs.count(source_ref) > 0 ) {
+				// match and add source id and its data to the data stores
 				triInputs[std::stoi(matches[2])] = vertInputs[source_ref];
+				
+				// set the semantic of the data source
 				dataStores[vertInputs[source_ref]].semantic = matches[1];
 			}	
 			else {
+				// match and add source id and its data to the data stores
 				triInputs[std::stoi(matches[2])] = source_ref;
+
+				// set the semantic of the data source
 				dataStores[source_ref].semantic = matches[1];
 			}
 
 			// add match data to map
 			fileStringCpy = matches.suffix();
 		}
+		
+		// search the remainder of the file
 		fileStringCpy = fileString;
 	}
 	
-	// FETCH INDICES
+	// LOAD INDICES
 	fileStringCpy = fileString;
+
+	// this regex searches for a 'p' tag inside the 'triangles' tags. Capture group pulls out the enclosed vertex definition indices
 	std::regex vertexDefinitionsExpression("<triangles.*?>[\\s\\S]*?<p>([\\s\\S]*?)</p>[\\s\\S]*?</triangles>");
 
 	std::cout << "> Loading indices. . ." << std::endl;
 	while (std::regex_search(fileStringCpy, matches, vertexDefinitionsExpression)) {
+		// capture index values
 		std::string values = matches[1];
 
 		char* token;
 		char* nextToken = nullptr;
 
+		// tokenise, convert to float and add to vector
 		token = strtok_s((char*)values.c_str(), " ", &nextToken);
 		while (token != NULL) {
 			vertexDefinitions.push_back(std::stoi(token));
 			token = strtok_s(NULL, " ", &nextToken);
 		}
 
-		// add match data to map
+		// search the remainder of the file
 		fileStringCpy = matches.suffix();
 	}
 
 	// BUILD VERTICES
 	std::cout << "> Building model vertices. . ." << std::endl;
-	for (int i = 0; i < vertexDefinitions.size(); i = i + triInputs.size()) {
-		GLuint offset = i;
 
+	// iterate over vertex definitions indices in 'chunks', interrogate which data store it references, and build a vertex
+	for (int i = 0; i < vertexDefinitions.size(); i = i + triInputs.size()) {
+
+		// prepare variables to store data
 		glm::vec3 v = glm::vec3();
 		glm::vec3 vn = glm::vec3();
 		glm::vec2 vt = glm::vec2();
 		glm::vec4 vc = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
+		// iterate over each index within the chunk and interrogate which data store it is referencing based on its semantic
 		for (int j = 0; j < triInputs.size(); j++) {
+			// get the source id from the triInputs using the current offset (j)
 			std::string sourceId = triInputs[j];
 			
+			// using the current vertex (i) and the current index within it (j), get the current index value from vertex definitions
 			GLuint currentIndex = vertexDefinitions[i + j];
 			
-			// fetch data from source and add to vertex attributes above
+			// using the source id, fetch the corresponding input source object
 			DAESourceData source = dataStores[sourceId];
 
+			// depending on the sources semantic, build appropriate vertex attribute
 			if (source.semantic == "VERTEX") {
+				// TODO: change the multiplier offset to be the stride of the input data
 				v.x = source.data[currentIndex * 3];
 				v.y = source.data[currentIndex * 3 + 1];
 				v.z = source.data[currentIndex * 3 + 2];
@@ -188,13 +223,12 @@ void DaeReader::parse(std::string& path, Model& model)
 
 		}
 
+		// once data has been interrogated, build vertex and add to final vertices vector
 		Vertex vertex = Vertex(v, vn, vt, vc);
 		vertices.push_back(vertex);
-
-		// update offset for the next set
-		offset += triInputs.size();
 	}
 
+	// generate indices. Since the vertices have already been triangluated, the indices are 0-n vertices
 	for (size_t i = 0; i < vertices.size(); i++)
 	{
 		indices.push_back(i);
@@ -202,30 +236,37 @@ void DaeReader::parse(std::string& path, Model& model)
 	std::cout << "> Finishing up. . ." << std::endl;
 
 	// LOAD MATERIAL
+	// this regex searches file for an image source within the library images tags. Capture group returns the image file name
 	std::regex materialExpression("<library_images>[\\s\\S]*?<init_from>([\\s\\S]+?)</init_from>[\\s\\S]*?<\/library_images>");
 
-	// generate model
-	Mesh m = Mesh();
+	// generate mesh to load data into
+	Mesh mesh = Mesh();
 
 	// add material if there is one
 	fileStringCpy = fileString;
 	while (std::regex_search(fileStringCpy, matches, materialExpression)) {
 		std::string materialSource = matches[1];
 
+		// if the material source is not dae template image for no texture then add material using the found texture
 		if (materialSource != "notexture.png") {
 			Material mat = Material();
 			mat.diffuseTextureMapPath = FileReader::getDirectory(path) + materialSource;
-			m.setMaterial(mat);
+			mesh.setMaterial(mat);
 		}
 		break;
 	}
 
-	m.setVertexes(vertices);
-	m.setIndices(indices);
-	m.init();
+	// set the vertices and indices for the mesh
+	mesh.setVertexes(vertices);
+	mesh.setIndices(indices);
 
+	// init OpenGL components
+	mesh.init();
+
+	// create template object to load mesh into
 	Object o = Object();
-	o.addMesh(m);
+	o.addMesh(mesh);
 
+	// load object into model that was handed into the function
 	model.addObject(o);
 }

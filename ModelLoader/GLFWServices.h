@@ -12,7 +12,7 @@
 class GLFWServices
 {
 public:
-	GLFWServices(std::vector<Model> *_models, GLuint* _currentlyActiveModel, ConsoleServices* console);
+	GLFWServices(std::vector<Model> *_models, GLuint* _currentlyActiveModel);
 	void createWindow(unsigned int height, unsigned int width, const char* windowName);
 	void update();
 	bool shouldClose();

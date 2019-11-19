@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 	console.printStartup();
 
 	// init GL services (models array req. in glfw for keypresses)
-	GLFWServices glfw = GLFWServices(&models, &currentlyActiveModel, &console);
+	GLFWServices glfw = GLFWServices(&models, &currentlyActiveModel);
 
 	// keybindings that require have dependancies in the scope of this file
 	glfw.addKeyBinding(GLFW_KEY_KP_ADD, [&]() {

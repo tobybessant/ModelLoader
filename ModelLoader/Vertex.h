@@ -2,6 +2,7 @@
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
 
+// vertex struct to aggregate vertex attrributes
 struct Vertex {
 	glm::vec3 position;
 	glm::vec2 texture;

@@ -22,6 +22,7 @@ Mesh::Mesh()
 }
 
 
+// init OpenGL resources using vertices, indecies and the texture
 void Mesh::init()
 {
 	initBuffers();
@@ -41,6 +42,7 @@ void Mesh::render(GLuint &_program)
 	
 }
 
+// de-allocate OpenGL resources for this mesh
 void Mesh::destroy()
 {
 	glBindVertexArray(VAO);
@@ -69,6 +71,7 @@ glm::vec3 Mesh::getMaterialColour()
 	return material.diffuse;
 }
 
+// init OpenGL Buffers using the vertices and indices property of this mesh
 void Mesh::initBuffers()
 {
 	// create and bind VAO buffers
@@ -86,7 +89,7 @@ void Mesh::initBuffers()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffers[Indices]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 
-	// tell opengl how to parse vertex data
+	// tell opengl how to parse vertex data, and what position in the shader it should go to
 	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, position)));
 	glEnableVertexAttribArray(vPosition);
 	
@@ -98,37 +101,47 @@ void Mesh::initBuffers()
 
 	glVertexAttribPointer(cPosition, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(offsetof(Vertex, colour)));
 	glEnableVertexAttribArray(cPosition);
-	
-	//glBindVertexArray(0);
 }
 
+// generate a texture using the materials' diffuseTexturePath property. If said value is null this function will generate a blank white pixel in its place
 void Mesh::createTexture()
 {
-	// texture 1
-	// ---------
+	// generate open gl texture using this mesh's texture pointer
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
+
 	// set the texture wrapping parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
 	// set texture filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// load image, create texture and generate mipmaps
 	
+	// check if material has a diffuse path set
  	if (!material.diffuseTextureMapPath.empty()) {
+		// declare values to store image properties
 		GLint width, height, nrChannels;
-		stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+		
+		// tell stb_image.h to flip loaded texture's on the y-axis.
+		stbi_set_flip_vertically_on_load(true); 
+		
+		// load binary image data into format OpenGL can read
 		unsigned char* data = stbi_load(material.diffuseTextureMapPath.c_str(), &width, &height, &nrChannels, 0);
 		if (data)
 		{
+			// load data into GL_TEXTURE_2D for this mesh
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		}
+		// de-allocate resources for the decoded image data
 		stbi_image_free(data);
 	}
 	else {
+		// initialise blank white bitmap pixel data
 		GLubyte texData[] = { 255, 255, 255, 255 };
+
+		// send bitmap data to OpenGL as a 1x1 pixel
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
 	}
 }
