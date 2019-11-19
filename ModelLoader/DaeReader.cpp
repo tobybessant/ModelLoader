@@ -3,28 +3,33 @@
 #include <iostream>
 #include <regex>
 
+// struct to store key information about a DAE input source 
 struct DAESourceData {
 	std::string stride;
 	std::string semantic;
 	std::vector<GLfloat> data;
 };
 
-
 void DaeReader::parse(std::string& path, Model& model)
 {
+	// init file reader components
 	FILE* fp;
 	errno_t err;
 	char line[500];
 
+	// init map for data stores and vector for vertex definitions
 	std::map<std::string, DAESourceData> dataStores;
 	std::vector<GLuint> vertexDefinitions;
 
+	// init result indices and vertices vectors
 	std::vector<GLuint> indices;
 	std::vector<Vertex> vertices;
 
+	// init strings to store whole file
 	std::string fileString;
 	std::string fileStringCpy;
 
+	// read entire file into a single string for effective regex searching
 	err = fopen_s(&fp, path.c_str(), "r");
 	if (err == 0) {
 		while (fgets(line, sizeof(line), fp) != NULL)
@@ -33,6 +38,7 @@ void DaeReader::parse(std::string& path, Model& model)
 		}
 	}
 
+	// copy string so original state can be preserved
 	fileStringCpy = fileString;
 
 	// SET DATA STORES

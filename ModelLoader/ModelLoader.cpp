@@ -15,44 +15,37 @@
 
 using namespace std;
 
-void removeModel(std::vector<Model>* modelStore);
-void loadModel(std::string& modelPath, FileReader& reader, std::vector<Model>& modelStore);
-void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Model>& modelStore);
-
-extern GLuint currentlyActiveModel = 0;
+void removeModel(std::vector<Model>* modelStore, GLuint& currentlyActiveModel);
+void loadModel(std::string& modelPath, FileReader& reader, std::vector<Model>& modelStore, GLuint& currentlyActiveModel);
+void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Model>& modelStore, GLuint& currentlyActiveModel);
 
 int main(int argc, char** argv) {
-	bool exitProgram = false;
-
-	vector<Model> models;
-
+	// declare models store and a path variable
 	string modelPath;
-	//
-	//string modelPath = "models/lowpolyboat-dae/low_poly_boat.dae";
-	//string modelPath = "models/creeper-dae/creeper.dae";
-
+	vector<Model> models;
+	GLuint currentlyActiveModel = 0;
 
 	// init service utilities for console and OBJ reader
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	ConsoleServices console = ConsoleServices(hConsole, &modelPath);
-	ObjReader oReader = ObjReader();
 
+	// print startup message
 	console.printStartup();
 
 	// init GL services (models array req. in glfw for keypresses)
 	GLFWServices glfw = GLFWServices(&models, &currentlyActiveModel, &console);
-	
 
+	// keybindings that require have dependancies in the scope of this file
 	glfw.addKeyBinding(GLFW_KEY_KP_ADD, [&]() {
-		addModel(console, modelPath, models);
+		addModel(console, modelPath, models, currentlyActiveModel);
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_KP_SUBTRACT, [&]() {
-		removeModel(&models);
+		removeModel(&models, currentlyActiveModel);
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_F1, [&]() {
-			currentlyActiveModel = 0;
+		currentlyActiveModel = 0;
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_F2, [&]() {
@@ -75,6 +68,7 @@ int main(int argc, char** argv) {
 			currentlyActiveModel = 4;
 	});
 
+	// create new window and init glew services
 	glfw.createWindow(600, 800, "Model Loader");
 	GLEWServices glew = GLEWServices();
 
@@ -85,31 +79,42 @@ int main(int argc, char** argv) {
 	// set global gl states
 	glEnable(GL_DEPTH_TEST);
 	
-	addModel(console, modelPath, models);
+	// propt for initial model file
+	addModel(console, modelPath, models, currentlyActiveModel);
 
+	// main loop to run and render models
 	while (!glfw.shouldClose()) {
 
+		// update program
 		program.update();
 
+		// loop through each added model and call render function
 		for (int i = 0; i < models.size(); i++) {
 			models[i].render(program.id());
 		}
 
+		// update glfw
 		glfw.update();
 	}
 
 	glfw.destroy();
 }
 
-void loadModel(std::string& modelPath, FileReader& reader, std::vector<Model>& modelStore) {
-	// read model file
+// load a new model using the path, a FileReader, the model store to add it to, and at the end update the currently active model
+void loadModel(std::string& modelPath, FileReader& reader, std::vector<Model>& modelStore, GLuint& currentlyActiveModel) {
+	// parse model file into new model
 	Model model = Model();
 	reader.parse(modelPath, model);
+
+	// add loaded model into array of models
 	modelStore.push_back(model);
+
+	// update currently active model to be the newly added model
 	currentlyActiveModel = modelStore.size() - 1;
 }
 
-void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Model>& modelStore)
+// add a model to the scene by recursively prompting the user to enter the path to a model
+void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Model>& modelStore, GLuint& currentlyActiveModel)
 {
 	console.askForModel();
 
@@ -123,36 +128,46 @@ void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Mode
 		}
 	}
 
+	// if file format is valid, create the appropriate reader type and check file exists
 	if (fileExt.compare(".obj") == 0) {
 		ObjReader r = ObjReader();
 		if (r.verifyFile(modelPath)) {
-			loadModel(modelPath, r, modelStore);
+			// if file exists, load into model store
+			loadModel(modelPath, r, modelStore, currentlyActiveModel);
 		}
 		else {
+			// if file does not exist, log error and prompt again
 			console.error(console.InvalidFile);
-			addModel(console, modelPath, modelStore);
+			addModel(console, modelPath, modelStore, currentlyActiveModel);
 		}
 	}
 	else if (fileExt.compare(".dae") == 0) {
 		DaeReader r = DaeReader();
 		if (r.verifyFile(modelPath)) {
-			loadModel(modelPath, r, modelStore);
+			loadModel(modelPath, r, modelStore, currentlyActiveModel);
 		}
 		else {
 			console.error(console.InvalidFile);
-			addModel(console, modelPath, modelStore);
+			addModel(console, modelPath, modelStore, currentlyActiveModel);
 		}
 	}
 	else {
+		// if file type is unrecognised, log error and prompt again
 		console.error(console.UnsupportedFormat);
-		addModel(console, modelPath, modelStore);
+		addModel(console, modelPath, modelStore, currentlyActiveModel);
 	}
 }
 
-void removeModel(std::vector<Model>* modelStore) {
+// remove most recently added model from the scene
+void removeModel(std::vector<Model>* modelStore, GLuint& currentlyActiveModel) {
+	// check there is a model to remove
 	if (modelStore->size() > 0) {
+		// if model to be removed is active, set active model to penultimate model
+		if (currentlyActiveModel == modelStore->size()) {
+			currentlyActiveModel = modelStore->size() - 1;
+		}
+		// deallocate model resources and pop from model store
 		modelStore->at(modelStore->size() - 1).destroy();
-		modelStore->pop_back();
-		currentlyActiveModel = modelStore->size() - 1;
+		modelStore->pop_back();	
 	}
 }
