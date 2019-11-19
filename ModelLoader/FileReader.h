@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include <string>
+
 class FileReader {
 public:
 	virtual void parse(std::string& path, Model& model) = 0;
@@ -16,5 +18,19 @@ public:
 			return true;
 		}
 		return false;
+	}
+
+protected:
+	std::string getDirectory(std::string& originalPath) {
+
+		std::string directory;
+		const size_t lastSlashIndex = originalPath.rfind('/');
+		if (std::string::npos != lastSlashIndex)
+		{
+			directory = originalPath.substr(0, lastSlashIndex);
+		}
+		directory += '/';
+
+		return directory;
 	}
 };

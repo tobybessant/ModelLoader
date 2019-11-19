@@ -122,7 +122,7 @@ void DaeReader::parse(std::string& path, Model& model)
 	
 	// FETCH INDICES
 	fileStringCpy = fileString;
-	std::regex vertexDefinitionsExpression("<triangles.*>[\\s\\S]*<p>([\\s\\S]*)</p>[\\s\\S]*</triangles>");
+	std::regex vertexDefinitionsExpression("<triangles.*?>[\\s\\S]*?<p>([\\s\\S]*?)</p>[\\s\\S]*?</triangles>");
 
 	std::cout << "> Loading indices. . ." << std::endl;
 	while (std::regex_search(fileStringCpy, matches, vertexDefinitionsExpression)) {
@@ -193,9 +193,25 @@ void DaeReader::parse(std::string& path, Model& model)
 	{
 		indices.push_back(i);
 	}
+	std::cout << "> Finishing up. . ." << std::endl;
+
+	// LOAD MATERIAL
+	std::regex materialExpression("<library_images>[\\s\\S]*?<init_from>([\\s\\S]+?)</init_from>[\\s\\S]*?<\/library_images>");
 
 	// generate model
 	Mesh m = Mesh();
+
+	// add material if there is one
+	fileStringCpy = fileString;
+	while (std::regex_search(fileStringCpy, matches, materialExpression)) {
+		std::string material_source = matches[1];
+
+		Material mat = Material();
+		mat.diffuseTextureMapPath = FileReader::getDirectory(path) + material_source;
+		m.setMaterial(mat);
+		break;
+	}
+
 	m.setVertexes(vertices);
 	m.setIndices(indices);
 	m.init();

@@ -103,6 +103,11 @@ void GLFWServices::registerKeyCallbacks()
 			models->at(*currentlyActiveModel).translate(glm::vec3(-1.0f, 0.0f, 0.0f));
 	});
 
+	addKeyBinding(GLFW_KEY_W, [&]() {
+		if (atLeastOneModel())
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	});
+
 }
 
 bool GLFWServices::atLeastOneModel()

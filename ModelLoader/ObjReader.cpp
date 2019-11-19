@@ -268,19 +268,6 @@ std::string ObjReader::getValue(char* line)
 	return (string)values[0];
 }
 
-std::string ObjReader::getDirectory(std::string& originalPath) {
-	
-	string directory;
-	const size_t lastSlashIndex = originalPath.rfind('/');
-	if (std::string::npos != lastSlashIndex)
-	{
-		directory = originalPath.substr(0, lastSlashIndex);
-	}
-	directory += '/';
-
-	return directory;
-}
-
 std::string ObjReader::getFileName(char* line)
 {
 	char* result = strchr(line, ' ');

@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 
 
 	// init service utilities for console and OBJ reader
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);	
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	ConsoleServices console = ConsoleServices(hConsole, &modelPath);
 	ObjReader oReader = ObjReader();
 
@@ -123,10 +123,7 @@ void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Mode
 		}
 	}
 
-	string objExt = ".obj";
-	string daeExt = ".dae";
-
-	if (fileExt.compare(objExt) == 0) {
+	if (fileExt.compare(".obj") == 0) {
 		ObjReader r = ObjReader();
 		if (r.verifyFile(modelPath)) {
 			loadModel(modelPath, r, modelStore);
@@ -136,7 +133,7 @@ void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Mode
 			addModel(console, modelPath, modelStore);
 		}
 	}
-	else if (fileExt.compare(daeExt) == 0) {
+	else if (fileExt.compare(".dae") == 0) {
 		DaeReader r = DaeReader();
 		if (r.verifyFile(modelPath)) {
 			loadModel(modelPath, r, modelStore);

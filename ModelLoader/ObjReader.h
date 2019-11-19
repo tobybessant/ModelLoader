@@ -25,6 +25,5 @@ private:
 	std::string getValue(char* line);
 
 	void loadMtl(std::string& mtlPath, std::map<std::string, Material>& materials);
-	std::string getDirectory(std::string& originalPath);
 	std::string getFileName(char* line);
 }; 
