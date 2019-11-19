@@ -108,6 +108,8 @@ int main(int argc, char** argv) {
 	}
 
 	glfw.destroy();
+
+	console.setTextColour(console.WHITE);
 }
 
 // load a new model using the path, a FileReader, the model store to add it to, and at the end update the currently active model
@@ -143,13 +145,14 @@ void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Mode
 		if (fileExt.compare(".obj") == 0) {
 			ObjReader r = ObjReader();
 			if (r.verifyFile(modelPath)) {
+				// if file exists, load into model store
 				try {
 					loadModel(modelPath, r, modelStore, currentlyActiveModel);
 				}
 				catch(...) {
 					console.error(console.ReadError);
+					addModel(console, modelPath, modelStore, currentlyActiveModel);
 				}
-				// if file exists, load into model store
 			}
 			else {
 				// if file does not exist, log error and prompt again
@@ -160,9 +163,17 @@ void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Mode
 		else if (fileExt.compare(".dae") == 0) {
 			DaeReader r = DaeReader();
 			if (r.verifyFile(modelPath)) {
-				loadModel(modelPath, r, modelStore, currentlyActiveModel);
+				// if file exists, load into model store
+				try {
+					loadModel(modelPath, r, modelStore, currentlyActiveModel);
+				}
+				catch (...) {
+					console.error(console.ReadError);
+					addModel(console, modelPath, modelStore, currentlyActiveModel);
+				}
 			}
 			else {
+				// if file does not exist, log error and prompt again
 				console.error(console.InvalidFile);
 				addModel(console, modelPath, modelStore, currentlyActiveModel);
 			}

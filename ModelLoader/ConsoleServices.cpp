@@ -1,5 +1,6 @@
 #include "ConsoleServices.h"
 
+
 ConsoleServices::ConsoleServices(HANDLE& _h, std::string* _modelPath)
 {
 	h = _h;
@@ -23,7 +24,8 @@ void ConsoleServices::askForModel()
 	std::cout << "  Path: ";
 
 	// save user input to modelPath variable
-	std::cin >> *modelPath;
+	std::getline(std::cin, *modelPath);
+
 	setTextColour(GREY);
 	// update asking for model state as console is no longer asking for model
 	askedForModel = false;
