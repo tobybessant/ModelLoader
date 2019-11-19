@@ -49,7 +49,7 @@ void DaeReader::parse(std::string& path, Model& model)
 
 	// search file string for matches
 	while (std::regex_search(fileStringCpy, matches, dataSourceExpression)) {
-		std::cout << "> Processing " << matches[1] << " . . ." << std::endl;
+		std::cout << "  > Processing " << matches[1] << " . . ." << std::endl;
 
 		// init new source object
 		DAESourceData source = DAESourceData();
@@ -115,7 +115,7 @@ void DaeReader::parse(std::string& path, Model& model)
 		triColour
 	};
 
-	std::cout << "> Preparing vertex data. . ." << std::endl;
+	std::cout << "  > Preparing vertex data. . ." << std::endl;
 	
 	// search the file using each regex to match each input with its source
 	for (int i = 0; i < triInputExpressions.size(); i++) {
@@ -156,7 +156,7 @@ void DaeReader::parse(std::string& path, Model& model)
 	// this regex searches for a 'p' tag inside the 'triangles' tags. Capture group pulls out the enclosed vertex definition indices
 	std::regex vertexDefinitionsExpression("<triangles.*?>[\\s\\S]*?<p>([\\s\\S]*?)</p>[\\s\\S]*?</triangles>");
 
-	std::cout << "> Loading indices. . ." << std::endl;
+	std::cout << "  > Loading indices. . ." << std::endl;
 	while (std::regex_search(fileStringCpy, matches, vertexDefinitionsExpression)) {
 		// capture index values
 		std::string values = matches[1];
@@ -176,7 +176,7 @@ void DaeReader::parse(std::string& path, Model& model)
 	}
 
 	// BUILD VERTICES
-	std::cout << "> Building model vertices. . ." << std::endl;
+	std::cout << "  > Building model vertices. . ." << std::endl;
 
 	// iterate over vertex definitions indices in 'chunks', interrogate which data store it references, and build a vertex
 	for (int i = 0; i < vertexDefinitions.size(); i = i + triInputs.size()) {
@@ -233,7 +233,7 @@ void DaeReader::parse(std::string& path, Model& model)
 	{
 		indices.push_back(i);
 	}
-	std::cout << "> Finishing up. . ." << std::endl;
+	std::cout << "  > Finishing up. . ." << std::endl;
 
 	// LOAD MATERIAL
 	// this regex searches file for an image source within the library images tags. Capture group returns the image file name
@@ -269,4 +269,7 @@ void DaeReader::parse(std::string& path, Model& model)
 
 	// load object into model that was handed into the function
 	model.addObject(o);
+
+	std::cout << "  > Complete" << std::endl;
+	std::cout << "  ==================================" << std::endl;
 }

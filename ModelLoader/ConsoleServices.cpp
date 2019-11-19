@@ -18,13 +18,13 @@ void ConsoleServices::askForModel()
 	// set state to interrupt main loop
 	askedForModel = true;
 
-	// set text colour to grey and print path promt
-	setTextColour(GREY);
+	// set text colour to yellow and print path promt
+	setTextColour(YELLOW);
 	std::cout << "  Path: ";
 
 	// save user input to modelPath variable
 	std::cin >> *modelPath;
-
+	setTextColour(GREY);
 	// update asking for model state as console is no longer asking for model
 	askedForModel = false;
 }

@@ -7,7 +7,7 @@ class ConsoleServices
 public:
 	// error and text colour enum
 	enum ERRORS { InvalidFile, ReadError, UnsupportedFormat };
-	enum TEXT_COLOURS { GREEN = 2, RED = 4, GREY = 8, CYAN = 11, WHITE = 15 };
+	enum TEXT_COLOURS { GREEN = 10, RED = 12, GREY = 8, CYAN = 11, YELLOW = 14, WHITE = 15 };
 
 	ConsoleServices(HANDLE& h, std::string* modelPath);
 
