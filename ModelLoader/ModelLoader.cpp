@@ -120,7 +120,7 @@ void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Mode
 
 	// identify file format
 	string fileExt = "";
-	for (size_t i = modelPath.size() - 1; i >= 0; i--)
+	for (size_t i = modelPath.size() - 1; i > 0; i--)
 	{
 		fileExt = modelPath[i] + fileExt;
 		if (modelPath[i] == '.') {
