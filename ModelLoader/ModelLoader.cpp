@@ -118,43 +118,45 @@ void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Mode
 {
 	console.askForModel();
 
-	// identify file format
-	string fileExt = "";
-	for (size_t i = modelPath.size() - 1; i > 0; i--)
-	{
-		fileExt = modelPath[i] + fileExt;
-		if (modelPath[i] == '.') {
-			break;
+	if (modelPath != "QUIT") {
+		// identify file format
+		string fileExt = "";
+		for (size_t i = modelPath.size() - 1; i > 0; i--)
+		{
+			fileExt = modelPath[i] + fileExt;
+			if (modelPath[i] == '.') {
+				break;
+			}
 		}
-	}
 
-	// if file format is valid, create the appropriate reader type and check file exists
-	if (fileExt.compare(".obj") == 0) {
-		ObjReader r = ObjReader();
-		if (r.verifyFile(modelPath)) {
-			// if file exists, load into model store
-			loadModel(modelPath, r, modelStore, currentlyActiveModel);
+		// if file format is valid, create the appropriate reader type and check file exists
+		if (fileExt.compare(".obj") == 0) {
+			ObjReader r = ObjReader();
+			if (r.verifyFile(modelPath)) {
+				// if file exists, load into model store
+				loadModel(modelPath, r, modelStore, currentlyActiveModel);
+			}
+			else {
+				// if file does not exist, log error and prompt again
+				console.error(console.InvalidFile);
+				addModel(console, modelPath, modelStore, currentlyActiveModel);
+			}
+		}
+		else if (fileExt.compare(".dae") == 0) {
+			DaeReader r = DaeReader();
+			if (r.verifyFile(modelPath)) {
+				loadModel(modelPath, r, modelStore, currentlyActiveModel);
+			}
+			else {
+				console.error(console.InvalidFile);
+				addModel(console, modelPath, modelStore, currentlyActiveModel);
+			}
 		}
 		else {
-			// if file does not exist, log error and prompt again
-			console.error(console.InvalidFile);
+			// if file type is unrecognised, log error and prompt again
+			console.error(console.UnsupportedFormat);
 			addModel(console, modelPath, modelStore, currentlyActiveModel);
 		}
-	}
-	else if (fileExt.compare(".dae") == 0) {
-		DaeReader r = DaeReader();
-		if (r.verifyFile(modelPath)) {
-			loadModel(modelPath, r, modelStore, currentlyActiveModel);
-		}
-		else {
-			console.error(console.InvalidFile);
-			addModel(console, modelPath, modelStore, currentlyActiveModel);
-		}
-	}
-	else {
-		// if file type is unrecognised, log error and prompt again
-		console.error(console.UnsupportedFormat);
-		addModel(console, modelPath, modelStore, currentlyActiveModel);
 	}
 }
 

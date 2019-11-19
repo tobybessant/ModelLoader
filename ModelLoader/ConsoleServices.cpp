@@ -18,6 +18,11 @@ void ConsoleServices::askForModel()
 	// set state to interrupt main loop
 	askedForModel = true;
 
+	for (int i = 0; i < 15; i ++) {
+		std::cout << std::endl;
+	}
+	printStartup();
+
 	// set text colour to yellow and print path promt
 	setTextColour(YELLOW);
 	std::cout << "  Path: ";
@@ -50,6 +55,7 @@ void ConsoleServices::printStartup()
 	std::cout << "  Translate Model....Keypad Arrows / KP 8, KP 6, KP 2, KP 4" << std::endl;
 	std::cout << "  Rotate Model.......Arrow Keys" << std::endl;
 	std::cout << "  Select Model.......F1-F5" << std::endl;
+	std::cout << "  Quit Program.......ESC (whilst console is not asking for a model)" << std::endl;
 
 	setTextColour(CYAN);
 	std::cout << std::endl;
