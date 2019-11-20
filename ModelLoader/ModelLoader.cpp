@@ -131,7 +131,7 @@ void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Mode
 {
 	console.askForModel();
 
-	if (modelPath != "QUIT") {
+	if (modelPath != "CANCEL") {
 		// identify file format
 		string fileExt = "";
 		for (size_t i = modelPath.size() - 1; i > 0; i--)
@@ -171,6 +171,9 @@ void addModel(ConsoleServices& console, std::string& modelPath, std::vector<Mode
 			console.error(console.InvalidFile);
 			addModel(console, modelPath, modelStore, currentlyActiveModel);
 		}
+	}
+	else {
+		console.cancelModelInput();
 	}
 }
 

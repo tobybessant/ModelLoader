@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <windows.h>
+#include <vector>
 
 class ConsoleServices
 {
@@ -15,6 +16,7 @@ public:
 	void setTextColour(TEXT_COLOURS colour);
 	
 	void askForModel();
+	void cancelModelInput();
 	bool askingForModel();
 
 	void printStartup();

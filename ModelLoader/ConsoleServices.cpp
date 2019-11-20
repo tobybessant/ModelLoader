@@ -19,6 +19,10 @@ void ConsoleServices::askForModel()
 	// set state to interrupt main loop
 	askedForModel = true;
 
+	// set text colour to gret and print cancel tooltip
+	setTextColour(GREY);
+	std::cout << "  [Enter 'CANCEL' to exit model entry]" << std::endl;
+
 	// set text colour to yellow and print path promt
 	setTextColour(YELLOW);
 	std::cout << "  Path: ";
@@ -29,6 +33,12 @@ void ConsoleServices::askForModel()
 	setTextColour(GREY);
 	// update asking for model state as console is no longer asking for model
 	askedForModel = false;
+}
+
+void ConsoleServices::cancelModelInput()
+{
+	setTextColour(WHITE);
+	std::cout << "  Cancelled model addition";
 }
 
 bool ConsoleServices::askingForModel()
@@ -56,7 +66,7 @@ void ConsoleServices::printStartup()
 
 	setTextColour(CYAN);
 	std::cout << std::endl;
-	std::cout << "  Please enter the path to a model file you would like to load (.obj | .dae):" << std::endl;
+	std::cout << "  Please enter the path to a model file you would like to load (.obj | .dae)." << std::endl;
 }
 
 // log error formatted in red based on console error enum

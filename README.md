@@ -79,7 +79,7 @@ Certain OpenGL libraries have been separated and encapsulated away from the main
 File loaders manage the translation of a given model's file representation into a format that OpenGL can accept and render. The loaders comply to a standard format, only altering how they read & load the files data based on its format (.obj / .dae). To do this, an abstract `ILoader` class exists to govern high-level interactions.
 
 #### ILoader
-`ILoader` is an abstract class with little implementation that's primary purpose is to ensure the high-level interactions are consistent across readers. Some shared functionality such as `verifyFile()` and `getDirectory()` do exist as helper-functions, but `virtual void parse()` provides an interface through which derived classes can perform the data translation.
+`ILoader` is an abstract class with little implementation that's primary purpose is to ensure the high-level interactions are consistent across loaders. Some shared functionality such as `verifyFile()` and `getDirectory()` do exist as helper-functions, but `virtual void parse()` provides an interface through which derived classes can perform the data translation.
 
 #### Parsing
 Parsing the files is done differently but the result is the same; a `Model` object with the loaded data. The general steps taken are:

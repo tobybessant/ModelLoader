@@ -24,6 +24,8 @@ void GLFWServices::createWindow(unsigned int height, unsigned int width, const c
 	glfwSetWindowUserPointer(window, this);
 	glfwSetKeyCallback(window, keypress);
 
+	glfwSetWindowPos(window, 100, 100);
+
 	glfwMakeContextCurrent(window);
 	std::cout << "   OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
