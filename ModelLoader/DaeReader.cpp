@@ -201,24 +201,44 @@ void DAELoader::parse(std::string& path, Model& model)
 			// depending on the sources semantic, build appropriate vertex attribute
 			if (source.semantic == "VERTEX") {
 				// TODO: change the multiplier offset to be the stride of the input data
+
+				// check that the extreme index (largest) is present in the data source it is referencing
+				if ((currentIndex * 3 + 2) > source.data.size() - 1)
+					throw std::exception();
+
 				v.x = source.data[currentIndex * 3];
 				v.y = source.data[currentIndex * 3 + 1];
 				v.z = source.data[currentIndex * 3 + 2];
 			}
 			else if (source.semantic == "NORMAL") {
+				// check that the extreme index (largest) is present in the data source it is referencing
+				if ((currentIndex * 3 + 2) > source.data.size() - 1)
+					throw std::exception();
+
 				vn.x = source.data[currentIndex * 3];
 				vn.y = source.data[currentIndex * 3 + 1];
 				vn.z = source.data[currentIndex * 3 + 2];
 			}
 			else if (source.semantic == "TEXCOORD") {
+				// check that the extreme index (largest) is present in the data source it is referencing
+				if ((currentIndex * 2 + 1) > source.data.size() - 1)
+					throw std::exception();
+
 				vt.s = source.data[currentIndex * 2];
 				vt.t = source.data[currentIndex * 2 + 1];
 			}
 			else if (source.semantic == "COLOR") {
+				// check that the extreme index (largest) is present in the data source it is referencing
+				if ((currentIndex * 4 + 3) > source.data.size() - 1)
+					throw std::exception();
+
 				vc.r = source.data[currentIndex * 4];
 				vc.g = source.data[currentIndex * 4 + 1];
 				vc.b = source.data[currentIndex * 4 + 2];
 				vc.a = source.data[currentIndex * 4 + 3];
+
+				std::cout << "Data size" << source.data.size() << std::endl;
+				std::cout << "Largest col index: " << (currentIndex * 3 + 3) << std::endl;
 			}
 
 		}

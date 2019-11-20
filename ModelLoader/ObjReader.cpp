@@ -113,14 +113,26 @@ void OBJLoader::parse(string &path, Model &model)
 
 					// identify which vertex attribute to get source data from based on the indexType (counter) % 3 value
 					if (indexType % 3 == 0) {
+						// check index exists in data store
+						if (std::stoi(index) > vertexStore.size())
+							throw std::exception();
+
 						// if it is the first index of the 3 (indexType == 0) then it is a positional vector index
 						v = vertexStore.at(std::stoi(index) - 1);
 					}
 					else if (indexType % 3 == 1) {
+						// check index exists in data store
+						if (std::stoi(index) > textureStore.size())
+							throw std::exception();
+
 						// if it is the second index of the 3 (indexType == 1) then it is a texture vector index
 						vt = textureStore.at(std::stoi(index) - 1);
 					}
 					else {
+						// check index exists in data store
+						if (std::stoi(index) > normalStore.size())
+							throw std::exception();
+
 						// else it is the normal and we can assume we have covered all 3 of a given vertex's indices
 						vn = normalStore.at(std::stoi(index) - 1);
 
