@@ -33,9 +33,7 @@ int main(int argc, char** argv) {
 	for (int i = 0; i < 15; i++) {
 		std::cout << std::endl;
 	}
-	// print startup message
-	console.printStartup();
-
+	
 	// init GL services (models array req. in glfw for keypresses)
 	GLFWServices glfw = GLFWServices(&models, &currentlyActiveModel);
 
@@ -89,6 +87,9 @@ int main(int argc, char** argv) {
 	// set global gl states
 	glEnable(GL_DEPTH_TEST);
 	
+	// print startup message
+	console.printStartup();
+
 	// propt for initial model file
 	addModel(console, modelPath, models, currentlyActiveModel);
 

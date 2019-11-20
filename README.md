@@ -5,9 +5,9 @@ This model loader was built in Visual Studio 2019, and as such *must* be built o
 
 Dependency | Version
 ---------- | ----------
-OpenGL     | [VERSION]
-GLFW       | [VERSION]
-GLEW       | [VERSION]
+OpenGL     | 4.6.0
+GLFW       | 3
+GLEW       | 1.2.3.4
 GLM        | 0.9.9
 
 Clone and open the Visual Studio Solution for this repo. These dependencies should already be in the NuGet Packages for the project, to install them:
