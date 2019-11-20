@@ -75,12 +75,8 @@ Certain OpenGL libraries have been separated and encapsulated away from the main
 * Asking for a new model
 * Handling errors
 
-### File Readers
-File readers manage the translation of a given model's file representation into a format that OpenGL can accept and render. The readers comply to a standard format, only altering how they read the files data based on its format (.obj / .dae). To do this, an abstract `FileReader` class exists to govern high-level consistency.
+### File Loaders
+File loaders manage the translation of a given model's file representation into a format that OpenGL can accept and render. The loaders comply to a standard format, only altering how they read & load the files data based on its format (.obj / .dae). To do this, an abstract `ILoader` class exists to govern high-level interactions.
 
-#### FileReader
-`FileReader` is an abstract class with little implementation that's primary purpose is to ensure the high-level interactions are consistent across readers. Some shared functionality such as `verifyFile()` and `getDirectory()` do exist as helper-functions, but `virtual void parse()` provides an interface through which derived classes can perform the data translation.
-
-#### ObjReader
-
-#### DaeReader
+#### ILoader
+`ILoader` is an abstract class with little implementation that's primary purpose is to ensure the high-level interactions are consistent across readers. Some shared functionality such as `verifyFile()` and `getDirectory()` do exist as helper-functions, but `virtual void parse()` provides an interface through which derived classes can perform the data translation.
