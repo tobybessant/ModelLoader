@@ -80,3 +80,12 @@ File loaders manage the translation of a given model's file representation into 
 
 #### ILoader
 `ILoader` is an abstract class with little implementation that's primary purpose is to ensure the high-level interactions are consistent across readers. Some shared functionality such as `verifyFile()` and `getDirectory()` do exist as helper-functions, but `virtual void parse()` provides an interface through which derived classes can perform the data translation.
+
+#### Parsing
+Parsing the files is done differently but the result is the same; a `Model` object with the loaded data. The general steps taken are:
+1. Parse data sources (positional vertices, texture coordinates, normals) into accessible data structures.
+2. Use parsed data sources and file-provided vertex definition indices (a given combination of indexes referencing aforementioned data sources) to generate a list of `Vertex` structs.
+3. Generate indices.
+4. Load list of `Vertex` structs and indices into a `Mesh` and add to `Object`.
+5. Initialise `Mesh` OpenGL resources.
+5. If multiple meshes, wipe generated `Vertex` struct list & indices & repeat from step 2.
