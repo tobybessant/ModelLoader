@@ -124,14 +124,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleServices.cpp" />
-    <ClCompile Include="DaeReader.cpp" />
+    <ClCompile Include="DAELoader.cpp" />
     <ClCompile Include="GLEWServices.cpp" />
     <ClCompile Include="GLFWServices.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="ObjReader.cpp" />
+    <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
   </ItemGroup>

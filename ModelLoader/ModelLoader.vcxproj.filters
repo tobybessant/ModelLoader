@@ -42,12 +42,6 @@
     <ClCompile Include="ShaderLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DaeReader.cpp">
-      <Filter>Source Files\File Readers</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjReader.cpp">
-      <Filter>Source Files\File Readers</Filter>
-    </ClCompile>
     <ClCompile Include="GLEWServices.cpp">
       <Filter>Source Files\Services</Filter>
     </ClCompile>
@@ -65,6 +59,12 @@
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="DAELoader.cpp">
+      <Filter>Source Files\File Readers</Filter>
+    </ClCompile>
+    <ClCompile Include="OBJLoader.cpp">
+      <Filter>Source Files\File Readers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
