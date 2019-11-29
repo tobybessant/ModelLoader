@@ -236,9 +236,6 @@ void DAELoader::parse(std::string& path, Model& model)
 				vc.g = source.data[currentIndex * 4 + 1];
 				vc.b = source.data[currentIndex * 4 + 2];
 				vc.a = source.data[currentIndex * 4 + 3];
-
-				std::cout << "Data size" << source.data.size() << std::endl;
-				std::cout << "Largest col index: " << (currentIndex * 3 + 3) << std::endl;
 			}
 
 		}

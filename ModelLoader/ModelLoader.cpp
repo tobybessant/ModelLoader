@@ -57,22 +57,22 @@ int main(int argc, char** argv) {
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_F2, [&]() {
-		if (models.size() == 2)
+		if (models.size() > 1)
 			currentlyActiveModel = 1;
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_F3, [&]() {
-		if (models.size() == 3)
+		if (models.size() > 2)
 			currentlyActiveModel = 2;
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_F4, [&]() {
-		if (models.size() == 4)
+		if (models.size() > 3)
 			currentlyActiveModel = 3;
 	});
 
 	glfw.addKeyBinding(GLFW_KEY_F5, [&]() {
-		if (models.size() == 5)
+		if (models.size() > 4)
 			currentlyActiveModel = 4;
 	});
 
